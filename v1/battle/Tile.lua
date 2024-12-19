@@ -2,7 +2,7 @@
 --- @class Tile
 --- @field public x number
 --- @field public y number
-local Tile = {
+Tile = {
   instances = {},
   instances_on_xy = {},
 }
@@ -25,7 +25,6 @@ function Tile.new(x,y)
 
 end
 
+
 function Tile.is(x) return getmetatable(x) == Tile end
 function Tile.assert(x) assert(Tile.is(x), "Expected Tile. Got " .. type(x)) end
-
-return Tile

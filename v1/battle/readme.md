@@ -2,8 +2,13 @@
 
 ### Roadmap
 
-- [ ] Display the world in chunks, sectors and tiles
-- [ ] Zoom level: Detail, normal, normal-far, minimap 
+- [x] Display the world in chunks, sectors and tiles
+- [ ] Zoom level: Detail, normal, normal-far, minimap
+  - [ ] load tile atlas 
+  - [ ] Display tiles in defautl zoom level
+  - [ ] dont display tiles in far zoom level
+
+
 - [ ] Toggle deployment mode
 - [ ] Spawn Sector
 - [ ] Control Units after spawn; collision; etc.

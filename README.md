@@ -42,9 +42,6 @@ Panzerkompanie: Panzer
 Pionierkompanie: verteidigungsbau
 Artilleriekompanie: Artillerie
 
-
-
-
 Man kann rauszoomen: Zoomstufen die dann einen anderen View und andere 
 Interaktionen ermöglichen.
 -> Man kämpft um tiles und schiebt dort seine Armeen hin und her.
