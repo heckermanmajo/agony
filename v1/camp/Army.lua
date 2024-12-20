@@ -1,3 +1,6 @@
+
+--- @class Army
+--- @field command_points number
 local Army = {}
 Army.__index = Army
 

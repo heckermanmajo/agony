@@ -23,22 +23,9 @@ function UiState.new()
   self.selection_start = nil  --- @type {x: number, y: number}? | nil
   self.selection_end = nil  --- @type {x: number, y: number}? | nil
   self.is_selecting = false  --- @type boolean
+  self.select_squad_mode = false  --- @type boolean
 
   return self
-end
-
---- Handles movement based on WASD keys
---- @param dt number Delta time
-function UiState:apply_wasd_movement(dt)
-  --- @type number
-  local speed = 1000
-  if love.keyboard.isDown("w") then self.cam.y = self.cam.y - speed * dt end
-  if love.keyboard.isDown("a") then self.cam.x = self.cam.x - speed * dt end
-  if love.keyboard.isDown("s") then self.cam.y = self.cam.y + speed * dt end
-  if love.keyboard.isDown("d") then self.cam.x = self.cam.x + speed * dt end
-
-  -- Rotate camera on R key
-  if love.keyboard.isDown("r") then self.cam.rotation = self.cam.rotation + 1 * dt end
 end
 
 --- Draws and handles unit selection using mouse input

@@ -1,9 +1,8 @@
 
 --- @class Unit
 --- @field target Unit
---- @field squad Squad
 --- @field walk_queue table<{x: number, y: number}>
---- @field owner BattleFaction
+--- @field owner FactionState
 --- @field cls UnitClass
 --- @field x number
 --- @field y number

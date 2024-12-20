@@ -157,3 +157,17 @@ function Camera:print_camera_info_on_screen(x, y)
   love.graphics.print("Camera zoom: " .. self.zoom, x, y + 40)
   love.graphics.print("Camera rotation: " .. self.rotation, x, y + 60)
 end
+
+--- Handles movement based on WASD keys
+--- @param dt number Delta time
+function Camera:apply_wasd_movement(dt)
+  --- @type number
+  local speed = 1000
+  if love.keyboard.isDown("w") then self.y = self.y - speed * dt end
+  if love.keyboard.isDown("a") then self.x = self.x - speed * dt end
+  if love.keyboard.isDown("s") then self.y = self.y + speed * dt end
+  if love.keyboard.isDown("d") then self.x = self.x + speed * dt end
+
+  -- Rotate camera on R key
+  if love.keyboard.isDown("r") then self.rotation = self.rotation + 1 * dt end
+end

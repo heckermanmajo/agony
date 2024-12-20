@@ -34,7 +34,7 @@ function Battle:update(dt)
   local mouseX, mouseY = love.mouse.getPosition()
 
   self.ui.cam:handleMouseDrag(isMiddleMousePressed, mouseX, mouseY)
-  self.ui:apply_wasd_movement(dt)
+  self.ui.cam:apply_wasd_movement(dt)
 end
 
 
