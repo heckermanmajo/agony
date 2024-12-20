@@ -7,9 +7,15 @@ GermanEmpire = {
   description = "The German Empire is a faction in the campaign.",
   color = { 1, 0, 0 },
    -- used to draw the squads in order in campaign and battle...
-  squads = {
+  inf_squads = {
     GermanEmpire_Squad1_LightInfantry,
     GermanEmpire_Squad2_MotorizedInfantry
+  },
+  armor_squads = {
+
+  },
+  support_calls = {
+
   },
   global_technologies = {
     {

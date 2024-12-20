@@ -3,7 +3,6 @@
 --- @field done_technologies table<string> this way we can save and restore the state of the faction
 --- @field money number
 --- @field enemy_factions FactionState[]
---- @field spawn_sector Sector reset ech time a battle starts
 FactionState = {
   instances = {},
 }
@@ -16,7 +15,6 @@ function FactionState.new(faction)
   self.done_technologies = {}
   self.money = 123
   self.enemy_factions = {}
-  self.spawn_sector = nil
   self.faction = faction
   self.is_player = false
   table.insert(FactionState.instances, self)

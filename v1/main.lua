@@ -21,15 +21,20 @@ require "camp/Camp"
 require "camp/CampTile"
 require "camp/FactionState"
 
+require "data/type_hints" -- also contains check functions that are used for checking
+
 require "data/factions/french_republic/FrenchRepublic"
 
 require "data/factions/russian_empire/RussianEmpire"
+
+
 
 -- note: squads need to be loaded before the faction...
 require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
 require "data/factions/german_empire/GermanEmpire"
 require "data/factions/german_empire/GermanLightSoldier"
+
 
 Camp.new()
 -- temporary test battle
