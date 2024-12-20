@@ -3,6 +3,8 @@
 --- @field command_points number
 --- @field campaign_tile CampTile
 --- @field moved_this_turn boolean
+--- @field owner FactionState
+--- @field spawn_queue table<SquadTemplate> used in the battle to spawn units
 Army = {
   instances = {},
 }
@@ -12,6 +14,8 @@ function Army.new(command_points, ct)
   local self = setmetatable({}, Army)
   self.command_points = command_points
   self.campaign_tile = ct
+  self.spawn_queue = {}
+  self.owner = ct.owner
   self.moved_this_turn = false
   table.insert(Army.instances, self)
   return self

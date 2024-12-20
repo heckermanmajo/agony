@@ -8,10 +8,13 @@ require "battle/Sector"
 require "battle/Tile"
 require "battle/UiState"
 require "battle/Unit"
+require "battle/Projectile"
+require "battle/PassiveObject"
 
 require "battle/functions/initialize_the_battle_field"
 require "battle/functions/load_all_resources"
 require "battle/functions/draw_the_battle_field"
+require "battle/functions/create_formation"
 
 require "camp/Army"
 require "camp/Camp"
@@ -22,13 +25,19 @@ require "data/factions/french_republic/FrenchRepublic"
 
 require "data/factions/russian_empire/RussianEmpire"
 
-require "data/factions/german_empire/GermanEmpire"
-require "data/factions/german_empire/GermanLightSoldier"
+-- note: squads need to be loaded before the faction...
 require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
+require "data/factions/german_empire/GermanEmpire"
+require "data/factions/german_empire/GermanLightSoldier"
 
-Battle.new({}, 4)
 Camp.new()
+-- temporary test battle
+Battle.new({
+  Army.new(100, CampTile.new(-1,-1,"water",FactionState.instances[1])),
+  Army.new(100, CampTile.new(-1,-2,"water",FactionState.instances[2]))
+})
+
 
 local mode = "camp"
 

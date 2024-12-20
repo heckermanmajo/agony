@@ -3,6 +3,8 @@
 --- @field y number
 --- @field tiles Tile[]
 --- @field public instances Chunk[] STATIC
+--- @field public units Unit[] STATIC
+--- @field public passive_objects PassiveObject[] STATIC
 --- @field public instances_on_xy table<number, table<number, Chunk>> STATIC
 Chunk = {
   instances = {},
@@ -18,6 +20,7 @@ function Chunk.new(x,y)
   self.y = y
   self.tiles = {}
   self.units = {}
+  self.passive_objects = {}
 
   table.insert(Chunk.instances, self)
   Chunk.instances_on_xy[x] = Chunk.instances_on_xy[x] or {}
@@ -73,6 +76,24 @@ function Chunk.get(x_pixel, y_pixel, throw)
   if exists then return Chunk.instances_on_xy[x][y] end
   if throw then error("Chunk not found at " .. x .. ", " .. y) end
   return nil
+end
+
+--- @return Chunk[]
+function Chunk:get_neighbours(not_diagonal)
+  local directions = {{1,0}, {0,1}, {-1,0}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}}
+  if not_diagonal then directions = {{1,0}, {0,1}, {-1,0}, {0,-1}} end
+  local neighbours = {}
+  for _, direction in ipairs(  ) do
+    local x = self.x + direction[1]
+    local y = self.y + direction[2]
+    local neighbour = Chunk.get(x, y)
+    if neighbour then table.insert(neighbours, neighbour) end
+  end
+  return neighbours
+end
+
+function Chunk:check_chunk_state()
+  -- todo: check all the units are on the correct chunk...
 end
 
 function Chunk.is(x) return getmetatable(x) == Chunk end

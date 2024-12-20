@@ -16,3 +16,40 @@ function Utils.mouse_is_over(x, y, width, height, cam)
   else mx, my = love.mouse.getPosition() end
   return mx >= x and mx <= x + width and my >= y and my <= y + height
 end
+
+function Utils.find(table, value)
+  for i, v in ipairs(table) do if v == value then return i end end
+  return nil
+end
+
+function Utils.str_table(tbl, visited)
+    visited = visited or {}
+
+    if visited[tbl] then
+        return '"recursive"'
+    end
+
+    visited[tbl] = true
+
+    if type(tbl) ~= "table" then
+        return tostring(tbl)
+    end
+
+    -- Check if the table has a metatable with a name
+    local mt = getmetatable(tbl)
+    if mt and mt.__name then
+        return string.format('"%s"', mt.__name or "unknown-meta-table")
+    end
+
+    local result = "{"
+    for k, v in pairs(tbl) do
+        local keyStr = tostring(k)
+        local valueStr = Utils.str_table(v, visited)
+        result = result .. string.format("[%s] = %s, ", keyStr, valueStr)
+    end
+
+    result = result .. "}"
+    visited[tbl] = nil
+
+    return result
+end

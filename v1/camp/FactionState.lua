@@ -31,6 +31,7 @@ function FactionState.get_current_player_faction()
       return faction_state
     end
   end
+  assert(false, "No player faction found")
 end
 
 

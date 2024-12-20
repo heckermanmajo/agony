@@ -35,4 +35,5 @@ function Sector:get_map_border_chunks() end
 function Sector.get(x_pixel, y_pixel, throw) end
 
 function Sector.is(x) return getmetatable(x) == Sector end
+
 function Sector.assert(x) assert(Sector.is(x), "Expected Sector. Got " .. type(x)) end

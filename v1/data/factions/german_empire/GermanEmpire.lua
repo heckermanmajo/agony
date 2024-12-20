@@ -6,8 +6,10 @@ GermanEmpire = {
   name = "German Empire",
   description = "The German Empire is a faction in the campaign.",
   color = { 1, 0, 0 },
-  squads = { -- used to draw the squads in order in campaign and battle...
-    GermanEmpire_Squad1_LightInfantry
+   -- used to draw the squads in order in campaign and battle...
+  squads = {
+    GermanEmpire_Squad1_LightInfantry,
+    GermanEmpire_Squad2_MotorizedInfantry
   },
   global_technologies = {
     {

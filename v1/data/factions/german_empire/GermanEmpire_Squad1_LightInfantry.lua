@@ -1,9 +1,10 @@
 GermanEmpire_Squad1_LightInfantry = {
       id = "light_infantry_squad",
       name = "Light Infantry",
-      icon_path = "",
-      costs = 1, -- costs in command points
-      time_til_deployment = 7, -- time in seconds until it arrives on the battlefield
+      icon = love.graphics.newImage("assets/squad_icons/light_inf.png"),
+      costs = 11, -- costs in command points
+      available = true,
+      time_til_deployment = 71, -- time in seconds until it arrives on the battlefield
       units = { -- units that are sent on the battle-field
         GermanLightSoldier = 20
       },
