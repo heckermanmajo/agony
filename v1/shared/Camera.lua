@@ -46,8 +46,8 @@ function Camera:move(dx, dy)
   assert(type(dx) == "number", "dx must be a number")
   assert(type(dy) == "number", "dy must be a number")
 
-  self.x = self.x + dx
-  self.y = self.y + dy
+  self.x = math.floor(self.x + dx)
+  self.y = math.floor(self.y + dy)
 end
 
 --- Adjusts the zoom level incrementally
@@ -55,10 +55,19 @@ end
 function Camera:zoomBy(dzoom)
   assert(type(dzoom) == "number", "dzoom must be a number")
 
-  self.zoom = self.zoom + dzoom
+  -- other Zoom steps than 0.2 fuck up tile alignment ...
+  if dzoom > 0 then
+    self.zoom = self.zoom + 0.2
+  else
+    self.zoom = self.zoom - 0.2
+  end
 
+  if self.zoom == 0.27 then
+    self.zoom = 0.2
+  end
   -- round to 2 decimal places
-  self.zoom = math.floor(self.zoom * 10 + 0.5) / 10
+  --self.zoom = math.floor(self.zoom * 10 + 0.5) / 10
+
 
   if self.zoom < 0.07 then
     self.zoom = 0.07
@@ -163,11 +172,23 @@ end
 function Camera:apply_wasd_movement(dt)
   --- @type number
   local speed = 1000
-  if love.keyboard.isDown("w") then self.y = self.y - speed * dt end
-  if love.keyboard.isDown("a") then self.x = self.x - speed * dt end
-  if love.keyboard.isDown("s") then self.y = self.y + speed * dt end
-  if love.keyboard.isDown("d") then self.x = self.x + speed * dt end
+  if love.keyboard.isDown("w") then self.y = math.floor(self.y - speed * dt) end
+  if love.keyboard.isDown("a") then self.x = math.floor(self.x - speed * dt) end
+  if love.keyboard.isDown("s") then self.y = math.floor(self.y + speed * dt) end
+  if love.keyboard.isDown("d") then self.x = math.floor(self.x + speed * dt) end
 
   -- Rotate camera on R key
   if love.keyboard.isDown("r") then self.rotation = self.rotation + 1 * dt end
+end
+
+--- Transforms screen coordinates to screen coordinates
+--- @param screen_x number Screen x-coordinate
+--- @param screen_y number Screen y-coordinate
+--- @return number, number World x and y coordinates
+function Camera:transform_screen_xy_to_world_xy(screen_x, screen_y)
+  assert(type(screen_x) == "number", "screen_x must be a number")
+  assert(type(screen_y) == "number", "screen_y must be a number")
+  local world_x = (screen_x - love.graphics.getWidth() / 2) / self.zoom + self.x
+  local world_y = (screen_y - love.graphics.getHeight() / 2) / self.zoom + self.y
+  return world_x, world_y
 end

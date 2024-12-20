@@ -1,9 +1,8 @@
-
 require "shared/Utils"
 require "shared/Atlas"
+require "shared/Camera"
 
 require "battle/Battle"
-require "battle/Camera"
 require "battle/Chunk"
 require "battle/Sector"
 require "battle/Tile"
@@ -49,12 +48,19 @@ function love.update(dt)
   else Battle.current:update(dt) end
 end
 
+local canvas = love.graphics.newCanvas()
 function love.draw()
+  love.graphics.setCanvas(canvas)
+  love.graphics.clear()
+
   if mode == "camp" then
     Camp.current:draw()
   else
     Battle.current:draw()
   end
+  -- Draw everything here
+  love.graphics.setCanvas()
+  love.graphics.draw(canvas, 0, 0, 0, zoom, zoom)
 end
 
 -- apply zoom in and out
@@ -64,7 +70,7 @@ function love.wheelmoved(x, y)
       Camp.current.cam:zoomBy(0.06)
     elseif y < 0 then
       if Camp.current.cam.zoom > 0.1 then
-        Camp.current.cam:zoomBy(-(Camp.current.cam.zoom/10))
+        Camp.current.cam:zoomBy(-(Camp.current.cam.zoom / 10))
       end
       Camp.current.cam:zoomBy(-0.06)
     end
@@ -73,7 +79,7 @@ function love.wheelmoved(x, y)
       Battle.current.ui.cam:zoomBy(0.06)
     elseif y < 0 then
       if Battle.current.ui.cam.zoom > 0.1 then
-        Battle.current.ui.cam:zoomBy(-(Battle.current.ui.cam.zoom/10))
+        Battle.current.ui.cam:zoomBy(-(Battle.current.ui.cam.zoom / 10))
       end
       Battle.current.ui.cam:zoomBy(-0.06)
     end

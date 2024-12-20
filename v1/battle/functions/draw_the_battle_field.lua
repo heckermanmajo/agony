@@ -35,12 +35,12 @@ function draw_the_battle_field()
           -- draw a rect around te sector
           love.graphics.setColor(1, 1, 0)
 
-          --love.graphics.rectangle("line",
-          -- tile.x * Battle.TILE_SIZE_IN_PIXELS,
-          --  tile.y * Battle.TILE_SIZE_IN_PIXELS,
-          --  Battle.TILE_SIZE_IN_PIXELS,
-          --  Battle.TILE_SIZE_IN_PIXELS
-          -- )
+          love.graphics.rectangle("line",
+           tile.x * Battle.TILE_SIZE_IN_PIXELS,
+            tile.y * Battle.TILE_SIZE_IN_PIXELS,
+            Battle.TILE_SIZE_IN_PIXELS,
+            Battle.TILE_SIZE_IN_PIXELS
+           )
 
           -- draw the tile-texture
           local tile_x_pixel = tile.x * Battle.TILE_SIZE_IN_PIXELS
@@ -56,7 +56,7 @@ function draw_the_battle_field()
 
       love.graphics.rectangle("line",
         chunk.x * Battle.CHUNK_SIZE_IN_PIXELS,
-        chunk.y * Battle.CHUNK_SIZE_IN_PIXELS,
+       chunk.y * Battle.CHUNK_SIZE_IN_PIXELS,
         Battle.CHUNK_SIZE_IN_PIXELS,
         Battle.CHUNK_SIZE_IN_PIXELS
       )
@@ -69,11 +69,11 @@ function draw_the_battle_field()
     love.graphics.setColor(0, 1, 1)
 
     love.graphics.rectangle("line",
-      sector.x * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
-      sector.y * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
-      Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+     sector.x * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+     sector.y * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+     Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
       Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS
-    )
+   )
 
     :: continue_sector_loop ::
 

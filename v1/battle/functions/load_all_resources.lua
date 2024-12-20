@@ -12,6 +12,7 @@ function load_all_resources()
 
   do
     local atlas = Atlas.new("map_tiles", "assets/Tileset.png")
+    atlas:add_quad("water", 5*64, 1*64, 64, 64)
     atlas:add_quad("gras", 5*64, 2*64, 64, 64)
   end
 

@@ -1,14 +1,11 @@
 
 --- @class FactionState all data of a faction that are changed over time
 --- @field done_technologies table<string> this way we can save and restore the state of the faction
---- @field resource_order number
---- @field resource_manpower number
---- @field resource_resources number
---- @field entropy number
+--- @field money number
 --- @field enemy_factions FactionState[]
 --- @field spawn_sector Sector reset ech time a battle starts
 FactionState = {
-
+  instances = {},
 }
 FactionState.__index = FactionState
 
@@ -17,14 +14,23 @@ function FactionState.new(faction)
   local self = {}
   setmetatable(self, FactionState)
   self.done_technologies = {}
-  self.resource_order = 0
-  self.resource_manpower = 0
-  self.resource_resources = 0
-  self.entropy = 0
+  self.money = 123
   self.enemy_factions = {}
   self.spawn_sector = nil
   self.faction = faction
+  self.is_player = false
+  table.insert(FactionState.instances, self)
   return self
+end
+
+
+--- @return FactionState
+function FactionState.get_current_player_faction()
+  for _, faction_state in ipairs(FactionState.instances) do
+    if faction_state.is_player then
+      return faction_state
+    end
+  end
 end
 
 
