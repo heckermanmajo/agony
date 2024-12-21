@@ -82,10 +82,20 @@ function draw_the_battle_field()
 
   end -- end sector-loop
 
+  for _, unit in ipairs(Battle.current.ui.currently_selected_units) do
+    -- draw circle around the unit
+    love.graphics.setColor(1, 1, 1)
+    local radius = unit.cls.collision_radius + 4
+    love.graphics.circle("line", unit.x, unit.y, radius)
+  end
+
+  Projectile.draw_all()
+
   Battle.current.ui.cam:detach()
 
-  Battle.current.ui.cam:print_camera_info_on_screen(10, 10)
-
+  --Battle.current.ui.cam:print_camera_info_on_screen(10, 10)
+  love.graphics.print("Selected: " .. #Battle.current.ui.currently_selected_units, 10, 50)
+  love.graphics.print("Units: " .. #Unit.instances, 10, 70)
   -- draw the fps on the screen
   love.graphics.setColor(1, 1, 1)
   love.graphics.print("FPS: " .. love.timer.getFPS(), 10, 90)

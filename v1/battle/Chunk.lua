@@ -83,7 +83,7 @@ function Chunk:get_neighbours(not_diagonal)
   local directions = {{1,0}, {0,1}, {-1,0}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}}
   if not_diagonal then directions = {{1,0}, {0,1}, {-1,0}, {0,-1}} end
   local neighbours = {}
-  for _, direction in ipairs(  ) do
+  for _, direction in ipairs(directions) do
     local x = self.x + direction[1]
     local y = self.y + direction[2]
     local neighbour = Chunk.get(x, y)

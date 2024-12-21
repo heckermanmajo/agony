@@ -11,6 +11,7 @@
 --- @field armor_level number the armor level of the unit; 0 is no armor, 1 is light armor, 2 is medium armor, 3 is heavy armor, 4 is super heavy armor
 --- @field accuracy number the accuracy of the unit; 0 is no accuracy, 1 is low accuracy, 2 is medium accuracy, 3 is high accuracy, 4 is super high accuracy
 --- @field weapon_range number the range of the weapon of the unit in pixels
+--- @field collision_radius number the collision radius of the unit in pixels
 
 UnitClass = {}
 UnitClass.__index = UnitClass
@@ -24,7 +25,7 @@ function UnitClass.assert(x)
   assert(type(x.pierce) == "number", "Expected number for pierce. Got " .. type(x.pierce))
   assert(type(x.explosion_radius) == "number", "Expected number for explosion_radius. Got " .. type(x.explosion_radius))
   assert(type(x.explosion_type) == "string", "Expected string for explosion_type. Got " .. type(x.explosion_type))
-  assert(type(x.can_throw_granate) == "boolean", "Expected boolean for can_throw_granate. Got " .. type(x.can_throw_granate))
+  assert(type(x.can_throw_grenade) == "boolean", "Expected boolean for can_throw_granate. Got " .. type(x.can_throw_granate))
   assert(type(x.turrets) == "table", "Expected table for turrets. Got " .. type(x.turrets))
   for _, turret in ipairs(x.turrets) do
     UnitClass.assert(turret)

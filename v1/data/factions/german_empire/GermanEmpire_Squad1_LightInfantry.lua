@@ -4,9 +4,9 @@ GermanEmpire_Squad1_LightInfantry = {
       icon = love.graphics.newImage("assets/squad_icons/light_inf.png"),
       costs = 11, -- costs in command points
       available = true,
-      time_til_deployment = 71, -- time in seconds until it arrives on the battlefield
+      time_til_deployment = 1, -- time in seconds until it arrives on the battlefield
       units = { -- units that are sent on the battle-field
-        GermanLightSoldier = 20
+        [GermanLightSoldier] = 20
       },
       -- upgrade a single squad ...
       upgrades = {

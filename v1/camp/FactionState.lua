@@ -3,7 +3,10 @@
 --- @field done_technologies table<string> this way we can save and restore the state of the faction
 --- @field money number
 --- @field enemy_factions FactionState[]
+--- @field spawn_queue table<SquadTemplate>
+--- @field time_til_next_spawn number
 FactionState = {
+  --- @type FactionState[]
   instances = {},
 }
 FactionState.__index = FactionState
@@ -17,6 +20,8 @@ function FactionState.new(faction)
   self.enemy_factions = {}
   self.faction = faction
   self.is_player = false
+  self.spawn_queue = {}
+  self.time_til_next_spawn = 0
   table.insert(FactionState.instances, self)
   return self
 end

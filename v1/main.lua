@@ -15,6 +15,8 @@ require "battle/functions/initialize_the_battle_field"
 require "battle/functions/load_all_resources"
 require "battle/functions/draw_the_battle_field"
 require "battle/functions/create_formation"
+require "battle/functions/spawn_management"
+require "battle/functions/ai_management"
 
 require "camp/Army"
 require "camp/Camp"
@@ -27,14 +29,11 @@ require "data/factions/french_republic/FrenchRepublic"
 
 require "data/factions/russian_empire/RussianEmpire"
 
-
-
--- note: squads need to be loaded before the faction...
+-- note: squads need to be loaded before the faction, and soldiers need to be loaded before the squads
+require "data/factions/german_empire/GermanLightSoldier"
 require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
 require "data/factions/german_empire/GermanEmpire"
-require "data/factions/german_empire/GermanLightSoldier"
-
 
 Camp.new()
 -- temporary test battle
@@ -42,7 +41,6 @@ Battle.new({
   Army.new(100, CampTile.new(-1,-1,"water",FactionState.instances[1])),
   Army.new(100, CampTile.new(-1,-2,"water",FactionState.instances[2]))
 })
-
 
 local mode = "camp"
 

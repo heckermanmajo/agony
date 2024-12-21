@@ -1,8 +1,7 @@
 --- @class UiState
 --- @field cam Camera
 --- @field zoom_level string
---- @field currently_selected_units table
---- @field currently_selected_squads table
+--- @field currently_selected_units table<Unit>
 --- @field selection_start {x: number, y: number} | nil
 --- @field selection_end {x: number, y: number} | nil
 --- @field is_selecting boolean
@@ -19,8 +18,7 @@ function UiState.new()
 
   self.cam = Camera.new()  --- @type Camera
   self.zoom_level = "default"  --- @type string
-  self.currently_selected_units = {}  --- @type table
-  self.currently_selected_squads = {}  --- @type table
+  self.currently_selected_units = {}  --- @type table<Unit>
 
   -- Track mouse position and selection box
   self.selection_start = nil  --- @type {x: number, y: number}? | nil
@@ -63,10 +61,13 @@ end
 
 --- Finalizes the selection of units within the selection box
 function UiState:finalize_unit_selection()
+
+  --print("finalize_unit_selection")
+  --Camera:transform_screen_xy_to_world_xy(screen_x, screen_y)
   --- @type number, number
-  local x1, y1 = self.selection_start.x, self.selection_start.y
+  local x1, y1 = self.cam:transform_screen_xy_to_world_xy(self.selection_start.x, self.selection_start.y)
   --- @type number, number
-  local x2, y2 = self.selection_end.x, self.selection_end.y
+  local x2, y2 = self.cam:transform_screen_xy_to_world_xy(self.selection_end.x, self.selection_end.y)
 
   -- Reset the selected units
   self.currently_selected_units = {}
@@ -83,10 +84,10 @@ function UiState:finalize_unit_selection()
       table.insert(self.currently_selected_units, unit)
     end
   end
+
 end
 
 function UiState:display_and_handle_select_squad_mode()
-
 
   if love.keyboard.isDown("return") and UiState.key_press_cooldown <= 0 then
 
@@ -100,7 +101,9 @@ function UiState:display_and_handle_select_squad_mode()
 
   end
 
-  if self.select_squad_mode == "none" then return end
+  if self.select_squad_mode == "none" then
+    return
+  end
 
   local select_squad_modes = { "infantry", "armor", "support" }
 
@@ -137,61 +140,101 @@ function UiState:display_and_handle_select_squad_mode()
 
   love.graphics.setColor(1, 1, 1)
 
-  local icon_x = 10
-  local icon_y = 200
+  -- draw the spawn menu on the left side of the ui-window
+  do
 
-  local squads = {}
-  if self.select_squad_mode == "infantry" then
-    squads = FactionState.get_current_player_faction().faction.inf_squads
-  elseif self.select_squad_mode == "armor" then
-    squads = FactionState.get_current_player_faction().faction.armor_squads
-  end
+    local icon_x = 10
+    local icon_y = 200
 
-  for index, squad_template in ipairs(squads) do
+    local squads = {}
+    if self.select_squad_mode == "infantry" then
+      squads = FactionState.get_current_player_faction().faction.inf_squads
+    elseif self.select_squad_mode == "armor" then
+      squads = FactionState.get_current_player_faction().faction.armor_squads
+    end
 
-    local icon = squad_template.icon
-    love.graphics.draw(icon, icon_x, icon_y, 0, 1, 1)
+    for index, squad_template in ipairs(squads) do
 
-    local costs_in_command_points = squad_template.costs
+      local icon = squad_template.icon
+      love.graphics.draw(icon, icon_x, icon_y, 0, 1, 1)
 
-    -- print the costs at the right bottom
-    love.graphics.setColor(0, 1, 0)
-    love.graphics.print(costs_in_command_points .. "$", icon_x + 36, icon_y + 45)
-    love.graphics.setColor(1, 1, 1)
+      local costs_in_command_points = squad_template.costs
 
-    -- get the spawn duration
-    local duration = squad_template.time_til_deployment
-    -- print the duration at the right top
-    love.graphics.setColor(1, 1, 0)
-    love.graphics.print(duration .. "s", icon_x + 6, icon_y + 45)
-    love.graphics.setColor(1, 1, 1)
+      -- print the costs at the right bottom
+      love.graphics.setColor(0, 1, 0)
+      love.graphics.print(costs_in_command_points .. "$", icon_x + 36, icon_y + 45)
+      love.graphics.setColor(1, 1, 1)
+
+      -- get the spawn duration
+      local duration = squad_template.time_til_deployment
+      -- print the duration at the right top
+      love.graphics.setColor(1, 1, 0)
+      love.graphics.print(duration .. "s", icon_x + 6, icon_y + 45)
+      love.graphics.setColor(1, 1, 1)
 
 
-    -- mouse over and mouse interaction
-    if Utils.mouse_is_over(icon_x, icon_y, 64, 64) then
-      love.graphics.setColor(1, 0, 0)
-      love.graphics.rectangle("line", icon_x, icon_y, 64, 64)
-      if love.mouse.isDown(1) and UiState.key_press_cooldown <= 0 then
-        print("selected squad " .. index)
-        local squad = FactionState.get_current_player_faction().faction.inf_squads[index]
-        UiState.key_press_cooldown = 0.3
-        -- todo: insert squad into spawn queue -> of army
+      -- mouse over and mouse interaction
+      if Utils.mouse_is_over(icon_x, icon_y, 64, 64) then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.rectangle("line", icon_x, icon_y, 64, 64)
+        if love.mouse.isDown(1) and UiState.key_press_cooldown <= 0 then
+          print("selected squad " .. index)
+          local squad = FactionState.get_current_player_faction().faction.inf_squads[index]
+          UiState.key_press_cooldown = 0.3
+          -- todo: insert squad into spawn queue -> of army
+          local player_faction = FactionState.get_current_player_faction()
+          table.insert(player_faction.spawn_queue, squad)
+          if player_faction.time_til_next_spawn <= 0 then
+            player_faction.time_til_next_spawn = squad.time_til_deployment
+          end
+        end
+
+        love.graphics.setColor(1, 1, 1)
+
       end
 
-      love.graphics.setColor(1, 1, 1)
+      if index % 2 == 0 then
+        icon_x = 10
+        icon_y = icon_y + 64 + 10
+      else
+        icon_x = icon_x + 64 + 10
+      end
 
     end
 
-    if index % 2 == 0 then
-      icon_x = 10
-      icon_y = icon_y + 64 + 10
-    else
-      icon_x = icon_x + 64 + 10
+  end -- end drawing squad-spawn
+
+
+  -- render spawn queue
+  do
+
+    local player_faction = FactionState.get_current_player_faction()
+
+    local start_x = 200
+    local y = 10
+    local sum_of_spawn_durations = 0
+
+    for index, squad_template in ipairs(player_faction.spawn_queue) do
+      if index == 1 then
+        sum_of_spawn_durations = player_faction.time_til_next_spawn
+      else
+        sum_of_spawn_durations = sum_of_spawn_durations + squad_template.time_til_deployment
+      end
+      local icon = squad_template.icon
+      love.graphics.draw(icon, start_x, y, 0, 1, 1)
+      -- get the spawn duration
+      -- print the duration at the right top
+      love.graphics.setColor(1, 1, 0)
+      love.graphics.print(math.floor(sum_of_spawn_durations) .. "s", start_x + 6, y + 45)
+      love.graphics.setColor(1, 1, 1)
+
+      start_x = start_x + 64 + 10
     end
 
   end
 
 end
+
 
 
 --[[
@@ -252,10 +295,12 @@ end
 --- Type check for UiState objects
 --- @param x any
 --- @return boolean
-function UiState.is(x) return getmetatable(x) == UiState
+function UiState.is(x)
+  return getmetatable(x) == UiState
 end
 
 --- Asserts that the object is an instance of UiState
 --- @param x any
-function UiState.assert(x) assert(UiState.is(x), "Expected UiState. Got " .. type(x))
+function UiState.assert(x)
+  assert(UiState.is(x), "Expected UiState. Got " .. type(x))
 end

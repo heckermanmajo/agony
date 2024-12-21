@@ -12,6 +12,9 @@ Projectile = {
   instances = {},
 }
 
+-- todo: we have a BUG: if a unit dies that has a projectile in the air
+--       -> what happens to the projectile? is the unit removed? bla??
+
 -----------------------------------------------------------------------
 --- Create a new projectile.
 --- @param start_x number
@@ -72,8 +75,16 @@ function Projectile.update_all(dt)
 
     -- todo: do we need to do this each frame?
     -- todo: search for a better way to do this
-    local my_chunk = Battle.current:get_chunk_at(projectile.x, projectile.y)
+    local my_chunk = Chunk.get(projectile.x, projectile.y)
+    if my_chunk == nil then -- i am outside the map;delete me
+      table.insert(projectiles_to_remove, projectile)
+      goto continue_next_projectile
+    end
     for _, unit in ipairs(my_chunk.units) do
+
+      if unit == projectile.shooter or unit.owner == projectile.shooter.owner then -- do not hit the shooter
+        goto continue
+      end
 
       local unit_pos = { x = unit.x, y = unit.y }
       local distance = math.sqrt((unit_pos.x - projectile.x) ^ 2 + (unit_pos.y - projectile.y) ^ 2)
@@ -82,10 +93,11 @@ function Projectile.update_all(dt)
 
         -- apply unit hit
         do
+          print("HIT")
 
           -- todo: maybe create explosion
 
-          unit.hp = unit.hp - self.shooter.cls.attack
+          unit.hp = unit.hp - projectile.shooter.cls.attack
           if unit.hp <= 0 then
             local reason_of_death = "rifle"
             unit:delete_after_death(reason_of_death)
@@ -98,9 +110,9 @@ function Projectile.update_all(dt)
         break -- break the loop over units
 
       end -- if distance < 10: unit hit
-
+      ::continue::
     end -- loop over units
-
+    ::continue_next_projectile::
   end -- loop over projectiles
 
   -- remove the projectiles that hit a unit

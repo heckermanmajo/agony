@@ -68,7 +68,6 @@ function Camera:zoomBy(dzoom)
   -- round to 2 decimal places
   --self.zoom = math.floor(self.zoom * 10 + 0.5) / 10
 
-
   if self.zoom < 0.07 then
     self.zoom = 0.07
     self.minimap = true
