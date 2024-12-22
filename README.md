@@ -1,10 +1,38 @@
 # agony
 A game that need to be, but does not want to.
 
+## Strategy: Content + Gameplay
+Spiele die guten Content ermöglichen, aber dadurch zum selbst-spielen
+anregen.
+
+HOI -> Historic Depth + scope
+Project Zomboid -> Realistic but fun survival
+Rimworld -> Create your own story
+Minecraft -> absolute Freiheit
+Total War -> Cool battle-visuals + power-fantasy
+Factorio -> programming-fun without programming
+TTT -> Social fun
+AgeOfEmpires -> Competitive fun, Medivial coolness
+
+Zudem:
+Gameplay, dass man nicht woanders bekommt.
+
+Meine Fun-Motoren:
+- Moderne-Schlacht-Coolness mit einem Sand-boxy-feeling.
+- Sandbox-schlachten für Content-Creators.
+- Challenges für Content-Creators.
+- Power-Fantasy
+- Böse / GUt gameplay; inquisition
+
+
+
 ## Basic Rules
 - slow development 
 - check all the state all the time
 - dont overengineer
+
+Jede Game-Mechanik muss exponentiell Gameplay-spaß hinzufügen, denn 
+sie wird exponentiell schwerer zu implementieren.
 
 
 ## Roadmap
@@ -137,6 +165,44 @@ Für Ordnung und Sicherheit innerhalb und außerhalb der Truppe.
         Ausrüstung: Leichte Infanteriewaffen, Radfahrzeuge.
 
 
+
+- Nicht genau historisch, sondern angepasst an die game notnwednigkeiten
+
+Jedes der größeren länder hat zwei fraktionen: so kann man ein schicksal auswählen.
+
+Erstmal ist die kampangnenkarte klein und hat nur zwei länder
+und dann mit der zeit fügt man emehr und mehr hinzu.
+
+Anfang: Frankreich/deutschland: Bruderkrieg
+
+Deutschland: kaiserlich/faschismus
+
+Italien: GottesStaat/Faschismus
+
+Frankreich: Monarchie/Republik
+
+Rebellen-fraktionen
+
+Polen: Nationalstaat
+Ungarn: Königreich
+Dänemark: Monarchie/Republik
+
+Russland: Zarenreich/Sozialismus
+
+Usa: Demokratie/Kapitalismus
+
+England: Monarchie/Republik
+
+Japan: Kaiserreich/Faschismus
+
+China: Kaiserreich/Sozialismus
+
+Spanien: Monarchie/Republik
+
+Türkei: Osmanisches Reich/Republik
+
+
+bis zu 20 Squads
 
 ### Battle
 

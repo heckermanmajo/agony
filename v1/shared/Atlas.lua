@@ -4,8 +4,9 @@
 --- @field public color_replacements table<string, love.Image>
 --- @field public REPLACE_COLOR table<number, number, number, number> The default color to replace (magenta)
 Atlas = {
-  REPLACE_COLOR = Utils.color(255, 0, 255, 1),
+  REPLACE_COLOR = Utils.color(255, 255, 255, 1),
   instances = {},
+  --- @type table<string, Atlas>
   all = {},
 }
 Atlas.__index = Atlas
@@ -25,6 +26,7 @@ function Atlas.new(name, path_to_image)
   local self = {}
   setmetatable(self, Atlas)
 
+  self.path_to_image = path_to_image
   self.image = love.image.newImageData(path_to_image)
   self.quads = {}
   self.color_replacements = {
@@ -37,11 +39,11 @@ function Atlas.new(name, path_to_image)
 
   return self
 end
-
 --- Replaces a color in the atlas with the specified replacement color.
 --- @param color_name string The name of the color replacement
---- @param color table<number, number, number> The RGB values of the color to replace
+--- @param color table<number, number, number> The RGB (or RGBA) values of the color to replace
 function Atlas:replace_color_in_atlas(color_name, color)
+  -- Check input types
   if type(color_name) ~= "string" then
     error("Expected 'color_name' to be a string, got " .. type(color_name))
   end
@@ -49,7 +51,7 @@ function Atlas:replace_color_in_atlas(color_name, color)
     error("Expected 'color' to be a table, got " .. type(color))
   end
   if #color ~= 3 and #color ~= 4 then
-    error("Expected 'color' to be a table with 3 or 4 elements (RGB), got " .. #color)
+    error("Expected 'color' to be a table with 3 (RGB) or 4 (RGBA) elements, got " .. #color)
   end
   for i, v in ipairs(color) do
     if type(v) ~= "number" then
@@ -57,26 +59,35 @@ function Atlas:replace_color_in_atlas(color_name, color)
     end
   end
 
-  --- Replaces a pixel with the replacement color if it matches the specified color
-  --- @param x number The x-coordinate of the pixel
-  --- @param y number The y-coordinate of the pixel
-  --- @param r number The red component of the pixel's color
-  --- @param g number The green component of the pixel's color
-  --- @param b number The blue component of the pixel's color
-  --- @param a number The alpha component of the pixel's color
-  --- @return number The new red, green, blue, and alpha values for the pixel
+  -- Check that the color replacement value is defined
+  if not Atlas.REPLACE_COLOR then
+    error("Atlas.REPLACE_COLOR is not defined")
+  end
+
+  local replace_r, replace_g, replace_b = Atlas.REPLACE_COLOR[1], Atlas.REPLACE_COLOR[2], Atlas.REPLACE_COLOR[3]
+  local replace_a = Atlas.REPLACE_COLOR[4] or 1  -- If Atlas.REPLACE_COLOR doesn't have an alpha, assume it's 1.
+
+  -- Function to replace the pixel color if it matches the target color
   local function replace_pixel(x, y, r, g, b, a)
     local _ = x, y
-    if r == color[1] and g == color[2] and b == color[3] then
-      return Atlas.REPLACE_COLOR[1], Atlas.REPLACE_COLOR[2], Atlas.REPLACE_COLOR[3], Atlas.REPLACE_COLOR[4]
+    -- Check if the pixel color matches the color to replace
+    if r == replace_r and g == replace_g and b == replace_b and (a == replace_a or replace_a == 1) then
+      -- Replace color, preserving alpha (if RGBA)
+      if #color == 4 then
+        return color[1], color[2], color[3], color[4]
+      else
+        return color[1], color[2], color[3], a  -- Preserve original alpha if RGB
+      end
     end
     return r, g, b, a
   end
 
-  local new_image = love.image.newImageData(self.image:getWidth(), self.image:getHeight())
-  new_image:mapPixel(replace_pixel)
+  -- Create a new image to store the replaced pixels
+  local new_image_data = love.image.newImageData(self.path_to_image)
+  new_image_data:mapPixel(replace_pixel)
 
-  self.color_replacements[color_name] = love.graphics.newImage(new_image)
+  -- Store the replaced image under the given color_name
+  self.color_replacements[color_name] = love.graphics.newImage(new_image_data)
 end
 
 --- Registers a new quad (a region from the atlas) for rendering.
@@ -113,9 +124,11 @@ end
 --- @param rotation number The rotation of the quad (in radians); defaults to 0
 --- @param scale_x number The horizontal scale factor; defaults to 1
 --- @param scale_y number The vertical scale factor; defaults to 1
-function Atlas:draw_quad(quad_name, x, y, color_name, rotation, scale_x, scale_y)
+--- @param center boolean Whether to center the quad; defaults to false
+function Atlas:draw_quad(quad_name, x, y, color_name, rotation, scale_x, scale_y, center)
   -- todo: we might need to optimize this function later
   color_name = color_name or "unchanged"
+  ignore_centering = ignore_centering or false
   rotation = rotation or 0
   scale_x = scale_x or 1
   scale_y = scale_y or 1
@@ -128,8 +141,8 @@ function Atlas:draw_quad(quad_name, x, y, color_name, rotation, scale_x, scale_y
   if type(y) ~= "number" then
     error("Expected 'y' to be a number, got " .. type(y))
   end
-  if type(color_name) ~= "string" then
-    error("Expected 'color_name' to be a string, got " .. type(color_name))
+  if type(color_name) ~= "string" or type(color_name) == "table" then
+    error("Expected 'color_name' to be a string or a table, got " .. type(color_name))
   end
   if type(rotation) ~= "number" then
     error("Expected 'rotation' to be a number, got " .. type(rotation))
@@ -155,7 +168,12 @@ function Atlas:draw_quad(quad_name, x, y, color_name, rotation, scale_x, scale_y
 
   -- Draw the quad with the appropriate color replacement
   love.graphics.setColor(1, 1, 1)  -- Reset color to white for the drawing
-  love.graphics.draw(color_image, quad, x, y, rotation, scale_x, scale_y)
+  local _y,_y,w,h = quad:getViewport()
+  if not center then
+    love.graphics.draw(color_image, quad, x, y, rotation, scale_x, scale_y)
+  else
+    love.graphics.draw(color_image, quad, x, y, rotation, scale_x, scale_y, w/2, h/2)
+  end
 end
 
 

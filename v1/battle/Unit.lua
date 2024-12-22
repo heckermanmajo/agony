@@ -7,6 +7,7 @@
 --- @field y number
 --- @field hp number
 --- @field shooting_cooldown number
+--- @field rotation number
 --- @field chunk_i_am_on Chunk
 --- @field turrets Unit[] a list of my turrets
 Unit = {
@@ -31,6 +32,7 @@ function Unit.new(x, y, unit_class, owner)
   self.walk_queue = {}
   self.chunk_i_am_on = nil
   self.shooting_cooldown = 0
+  self.rotation = 0
   self.turrets = {}
   self.passengers = {} -- some units can carry other units: lkw, tanks, etc.
   self.time_til_next_look_for_target = math.random(0, 3)
@@ -45,11 +47,26 @@ function Unit:draw()
   -- draw a circle at the unit's position in the color of the faction
   -- filled
   love.graphics.setColor(self.owner.faction.color)
-  love.graphics.circle("fill", self.x, self.y, 10)
+  --love.graphics.circle("fill", self.x, self.y, 10)
+  --local x, y, w, h = Atlas.all[self.cls.atlas].quads[self.cls.quad]:getViewport()
+  ---local w_half = w / 2
+  --local h_half = h / 2
+  assert(Atlas.all[self.cls.atlas] ~= nil)
+  assert(Atlas.all[self.cls.atlas].quads[self.cls.quad] ~= nil)
+  Atlas.all[self.cls.atlas]:draw_quad(
+    self.cls.quad,
+    self.x,
+    self.y,
+    self.owner.faction.color_name,
+    self.rotation,
+    1,
+    1,
+    true
+  )
 
   -- draw a purple circle around the unit with the radius of the weapon range
   local weapon_range = self.cls.weapon_range
-  love.graphics.setColor(0.5, 0, 0.5)
+  love.graphics.setColor(self.owner.faction.color)
   love.graphics.circle("line", self.x, self.y, weapon_range)
 
 end
@@ -96,6 +113,7 @@ function Unit:move(dt)
       local angle = math.atan2(next_pos.y - self.y, next_pos.x - self.x)
       self.x = self.x + math.cos(angle) * 100 * dt
       self.y = self.y + math.sin(angle) * 100 * dt
+      self.rotation = angle - math.pi / 2
     end
   end
 
@@ -112,6 +130,8 @@ function Unit:fight(dt)
   self.shooting_cooldown = self.shooting_cooldown - dt
   if self.target == nil then return end
   if self.shooting_cooldown > 0 then return end
+  --rotate towards target
+  self.rotation = math.atan2(self.target.y - self.y, self.target.x - self.x) - math.pi / 2
 
   Unit.assert(self.target)
 

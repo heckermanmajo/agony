@@ -10,6 +10,7 @@ function ai_management(dt)
       if spawn_cooldown == 0 then
         local squad = GermanEmpire.inf_squads[1]
         table.insert(bf.spawn_queue, squad)
+        bf.time_til_next_spawn = squad.time_til_deployment
         spawn_cooldown = squad.time_til_deployment + 20
       end
     end
