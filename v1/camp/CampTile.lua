@@ -79,5 +79,41 @@ function CampTile:get_neighbours()
   return neighbours
 end
 
+function CampTile:get_top_neighbour()
+  for _, ct in ipairs(CampTile.instances) do
+    if ct.x == self.x and ct.y == self.y - 1 then
+      return ct
+    end
+  end
+  return nil
+end
+
+function CampTile:get_bottom_neighbour()
+  for _, ct in ipairs(CampTile.instances) do
+    if ct.x == self.x and ct.y == self.y + 1 then
+      return ct
+    end
+  end
+  return nil
+end
+
+function CampTile:get_left_neighbour()
+  for _, ct in ipairs(CampTile.instances) do
+    if ct.x == self.x - 1 and ct.y == self.y then
+      return ct
+    end
+  end
+  return nil
+end
+
+function CampTile:get_right_neighbour()
+  for _, ct in ipairs(CampTile.instances) do
+    if ct.x == self.x + 1 and ct.y == self.y then
+      return ct
+    end
+  end
+  return nil
+end
+
 function CampTile.is(x) return getmetatable(x) == CampTile end
 function CampTile.assert(x) assert(CampTile.is(x), "Expected CampTile. Got " .. type(x)) end

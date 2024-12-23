@@ -23,6 +23,10 @@ require "camp/Camp"
 require "camp/CampTile"
 require "camp/FactionState"
 
+require "camp/functions/next_round_progression"
+require "camp/functions/handle_ai_movements"
+require "camp/functions/camp_draw"
+
 require "data/type_hints" -- also contains check functions that are used for checking
 
 require "data/factions/french_republic/FrenchRepublic"
@@ -35,6 +39,7 @@ require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
 require "data/factions/german_empire/GermanEmpire"
 
+
 Camp.new()
 -- temporary test battle
 Battle.new({
@@ -42,21 +47,21 @@ Battle.new({
   Army.new(100, CampTile.new(-1,-2,"water",FactionState.instances[2]))
 })
 
-local mode = "camp"
+MODE = "camp"
 
 function love.keypressed(key)
   if key == "tab" then
-    if mode == "camp" then
-      mode = "battle"
+    if MODE == "camp" then
+      MODE = "battle"
     else
-      mode = "camp"
+      MODE = "camp"
     end
   end
 end
 
 function love.update(dt)
   if love.keyboard.isDown("escape") then love.event.quit() end
-  if mode == "camp" then Camp.current:update(dt)
+  if MODE == "camp" then Camp.current:update(dt)
   else Battle.current:update(dt) end
 end
 
@@ -65,7 +70,7 @@ function love.draw()
   love.graphics.setCanvas(canvas)
   love.graphics.clear()
 
-  if mode == "camp" then
+  if MODE == "camp" then
     Camp.current:draw()
   else
     Battle.current:draw()
@@ -77,7 +82,7 @@ end
 
 -- apply zoom in and out
 function love.wheelmoved(x, y)
-  if mode == "camp" then
+  if MODE == "camp" then
     if y > 0 then
       Camp.current.cam:zoomBy(0.06)
     elseif y < 0 then

@@ -2,10 +2,14 @@
 --- @field cam Camera
 --- @field mouse_click_consumed_this_frame boolean
 --- @field currently_selected_tile CampTile
+--- @field ai_army_movement_queue table<{from:CampTile, to:CampTile}>
 Camp = {
+  --- @type Camp
   current = nil,
   button_cooldown = 0,
   mouse_click_consumed_this_frame = false,
+  current_debug_view = 0,
+  key_cooldown = 0,
 }
 Camp.__index = Camp
 
@@ -20,6 +24,7 @@ function Camp.new()
 
   self.cam = Camera.new(0, 0, 1, 0)
   self.currently_selected_tile = nil
+  self.ai_army_movement_queue = {}
 
   -- load the campaign png that contains the map structure
 
@@ -64,7 +69,7 @@ function Camp.new()
     if has_other_faction_on_border then
       ct.army = Army.new(math.floor(100 + math.random() * 30), ct)
     end
-    ::continue::
+    :: continue ::
   end
 
   Camp.current = self
@@ -74,109 +79,13 @@ function Camp.new()
 end
 
 
--- region Camp:draw()
-function Camp:draw()
-  if Camp.button_cooldown < 0 then
-    Camp.mouse_click_consumed_this_frame = false
-  end
-
-  self.cam:attach()
-
-  for _, ct in ipairs(CampTile.instances) do
-
-    local absolute_x = ct.x * 128
-    local absolute_y = ct.y * 128
-
-    if ct.type == "gras" then
-      -- draw rectangle lines around the tile
-      love.graphics.rectangle("fill", absolute_x, absolute_y, 128, 128)
-      love.graphics.setColor(1, 1, 1)
-      Atlas.all["map_tiles"]:draw_quad("gras", absolute_x, absolute_y, "unchanged", 0, 2, 2)
-      love.graphics.setColor(unpack(ct.owner.faction.color))
-      love.graphics.rectangle("line", absolute_x, absolute_y, 128, 128)
-      love.graphics.rectangle("line", absolute_x - 1, absolute_y - 1, 128 + 2, 128 + 2)
-      love.graphics.rectangle("line", absolute_x - 2, absolute_y - 2, 128 + 4, 128 + 4)
-    else
-      love.graphics.setColor(1, 1, 1)
-      Atlas.all["map_tiles"]:draw_quad("water", absolute_x, absolute_y, "unchanged", 0, 2, 2)
-    end
-
-    if ct.army then
-      ct.army:draw()
-    end
-
-    local mouse_hovers = Utils.mouse_is_over(absolute_x, absolute_y, 128, 128, self.cam)
-
-    if mouse_hovers then
-      Atlas.all["map_tiles"]:draw_quad("water", absolute_x, absolute_y, "unchanged", 0, 2, 2)
-    end
-  end
-
-
-
-  self.cam:detach()
-
-  -- if right click: deselect tile
-  if love.mouse.isDown(2) then self.currently_selected_tile = nil end
-
-
-  -- draw the ui
-
-  if self.currently_selected_tile then
-    local x = love.graphics.getWidth() - 360
-    self.currently_selected_tile:render_and_handle_ui(x)
-  end
-
-  -- draw header bar
-  love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
-  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth() - 360, 50)
-
-  -- start with the next round button
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print("Next Round", 10, 10)
-  -- draw a red rectangle around the next round button if the mouse is over it
-  if Utils.mouse_is_over(10, 10, 100, 30) then
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", 10, 10, 100, 30)
-    if love.mouse.isDown(1) and Camp.button_cooldown < 0 and not Camp.mouse_click_consumed_this_frame then
-      Camp.mouse_click_consumed_this_frame = true
-      Camp.button_cooldown = 0.5
-      print("Next Round")
-      -- todo: next round calculations
-    end
-  end
-
-  -- todo: next round on enter ...
-
-
-  for _, ct in ipairs(CampTile.instances) do
-    local absolute_x = ct.x * 128
-    local absolute_y = ct.y * 128
-    local mouse_hovers = Utils.mouse_is_over(absolute_x, absolute_y, 128, 128, self.cam)
-
-    if mouse_hovers and love.mouse.isDown(1) and not Camp.mouse_click_consumed_this_frame then
-      Camp.mouse_click_consumed_this_frame = true
-      self.currently_selected_tile = ct
-    end
-  end
-
-  love.graphics.setColor(1, 1, 1)
-  -- then the currents-faction money
-  local player_faction = FactionState.get_current_player_faction()
-  love.graphics.print("Money: " .. player_faction.money, 200, 10)
-
-  -- draw the fps counter
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print("FPS: " .. love.timer.getFPS(), 10, 70)
-  self.cam:print_camera_info_on_screen(10, 100)
-
-end
-
-
 --region Camp:update()
 --- Updates the Camp instance each frame
 function Camp:update(dt)
   Camp.button_cooldown = Camp.button_cooldown - dt
+  Camp.key_cooldown = Camp.key_cooldown - dt
+
+  handle_ai_movements(dt)
 
   -- handle camera movement
   do
@@ -185,5 +94,49 @@ function Camp:update(dt)
     self.cam:handleMouseDrag(isMiddleMousePressed, mouseX, mouseY)
     self.cam:apply_wasd_movement(dt)
   end
+
+  -- if f1 button set debug view to 1
+  if love.keyboard.isDown("f1") and Camp.key_cooldown < 0 then
+    if Camp.current_debug_view == 1 then Camp.current_debug_view = 0
+    else Camp.current_debug_view = 1 end
+    Camp.key_cooldown = 0.5
+  end
+
+  -- use the arrow keys to move the army
+  if self.currently_selected_tile then
+
+    if self.currently_selected_tile.army then
+
+      if self.currently_selected_tile.owner == FactionState.get_current_player_faction() then
+
+        if Camp.key_cooldown < 0 and not self.currently_selected_tile.army.moved_this_turn then
+
+          if love.keyboard.isDown("up") then
+            self.currently_selected_tile.army:move("up")
+            Camp.key_cooldown = 0.2
+          end
+
+          if love.keyboard.isDown("down") then
+            self.currently_selected_tile.army:move("down")
+            Camp.key_cooldown = 0.2
+          end
+
+          if love.keyboard.isDown("left") then
+            self.currently_selected_tile.army:move("left")
+            Camp.key_cooldown = 0.2
+          end
+
+          if love.keyboard.isDown("right") then
+            self.currently_selected_tile.army:move("right")
+            Camp.key_cooldown = 0.2
+          end
+
+        end -- end of if Camp.key_cooldown < 0 and not self.currently_selected_tile.army.moved_this_turn then
+
+      end -- end of if self.currently_selected_tile.owner == FactionState.get_current_player_faction() then
+
+    end -- end of if self.currently_selected_tile.army then
+
+  end -- end of if self.currently_selected_tile then
 
 end

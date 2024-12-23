@@ -1,11 +1,22 @@
 
+## Nächste Todos
+- Battle gewinnen/verlieren und dann anwenden
+  - Sektoren erobern
+- Simple ai moves
+- armeen erstellen
+- armeen updaten
+- commenten
+
 
 ## Tech-Demo (v1) - basic gameloop
 Die gameplay loop existiert, aber ist noch kacke.
+Man kann eine Kampange "durchspielen", aber kein menu, usw.
 -> zum beispiel "ai-movement" ist nur random movement, etc.
+-> keine coolen units...
 
 - Battle-Siegbedingung: chunk-erobern
   - sieg bei 80 % besitz
+  - tracken wem ein chunk gehört
 
 - Campaign-Map-Gameplay-Loop
   - move army
@@ -13,21 +24,21 @@ Die gameplay loop existiert, aber ist noch kacke.
   - simple ai: reinforce random + attack random
 
 - beides zusammenschweißen
-  - problem: wie macht man dass bei meheren 
+  - problem: wie macht man dass bei mehreren 
     battles hintereinander?
-
-- echte units zeichen satt nur kreise
 
 - pausieren
 
 - FIX UNIT RENDERING: alle chunks vor units rendern
 - nazi-haftes type checking
 - F1-F12 Debug view
+  - F1: toggle debug hits, wie zum beispiel die reichweite der units und die kollisions-kreise
+  - F2: toggle ein overlay mit allen zahlen der instances: units, chunks, projectiles, atlases, etc.
 - code aufräumen und alles kommentieren
 - statechecks
 
-## tech-demo (v2) - Fun Gameplay
-- technology in campaign map
+## tech-demo (v2) - VisualFun + Gameplay
+- technology in campaign map: simple technology at first
 - tanks
 - out of map artillery
 - logistic-center for reinforcement

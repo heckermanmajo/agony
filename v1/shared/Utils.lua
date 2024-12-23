@@ -1,7 +1,7 @@
 Utils = {}
 
 function Utils.color(r, g, b, a)
-  return {r/255, g/255, b/255, a or 1}
+  return { r / 255, g / 255, b / 255, a or 1 }
 end
 
 --- Checks if the mouse is over a rectangle.
@@ -23,33 +23,34 @@ function Utils.find(table, value)
 end
 
 function Utils.str_table(tbl, visited)
-    visited = visited or {}
 
-    if visited[tbl] then
-        return '"recursive"'
-    end
+  if type(tbl) ~= "table" then
+    return tostring(tbl)
+  end
 
-    visited[tbl] = true
+  visited = visited or {}
 
-    if type(tbl) ~= "table" then
-        return tostring(tbl)
-    end
+  if visited[tbl] then
+    return '"recursive"'
+  end
 
-    -- Check if the table has a metatable with a name
-    local mt = getmetatable(tbl)
-    if mt and mt.__name then
-        return string.format('"%s"', mt.__name or "unknown-meta-table")
-    end
+  visited[tbl] = true
 
-    local result = "{"
-    for k, v in pairs(tbl) do
-        local keyStr = tostring(k)
-        local valueStr = Utils.str_table(v, visited)
-        result = result .. string.format("[%s] = %s, ", keyStr, valueStr)
-    end
+  -- Check if the table has a metatable with a name
+  local mt = getmetatable(tbl)
+  if mt and mt.__name then
+    return string.format('"%s"', mt.__name or "unknown-meta-table")
+  end
 
-    result = result .. "}"
-    visited[tbl] = nil
+  local result = "{"
+  for k, v in pairs(tbl) do
+    local keyStr = tostring(k)
+    local valueStr = Utils.str_table(v, visited)
+    result = result .. string.format("[%s] = %s, ", keyStr, valueStr)
+  end
 
-    return result
+  result = result .. "}"
+  visited[tbl] = nil
+
+  return result
 end

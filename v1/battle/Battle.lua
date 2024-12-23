@@ -17,6 +17,17 @@ Battle.WORLD_SIZE_IN_CHUNKS = Battle.WORLD_SIZE_IN_SECTORS * Battle.SECTOR_SIZE_
 function Battle.new(
   armies
 )
+  -- reset the battle state
+  do
+    Projectile.instances = {}
+    Unit.instances = {}
+    PassiveObject.instances = {}
+    Sector.instances = {}
+    Chunk.instances = {}
+    Tile.instances = {}
+    Battle.current = nil
+  end
+
   local self = {}
   setmetatable(self, Battle)
 
