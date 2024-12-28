@@ -111,8 +111,10 @@ function Projectile.update_all(dt)
 
       end -- if distance < 10: unit hit
       ::continue::
+
     end -- loop over units
     ::continue_next_projectile::
+
   end -- loop over projectiles
 
   -- remove the projectiles that hit a unit
