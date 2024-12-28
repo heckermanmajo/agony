@@ -60,10 +60,6 @@ function draw_the_battle_field()
         Battle.CHUNK_SIZE_IN_PIXELS
       )
 
-      -- draw the units of the chunk
-      for _, unit in ipairs(chunk.units) do unit:draw() end
-      for _, po in ipairs(chunk.passive_objects) do po:draw() end
-
       :: continue_chunk_loop ::
 
     end -- end chunk-loop
@@ -81,6 +77,44 @@ function draw_the_battle_field()
     :: continue_sector_loop ::
 
   end -- end sector-loop
+
+
+  for _, sector in ipairs(Sector.instances) do
+
+    if (
+      not Battle.current.ui.cam:rectInView(
+        sector.x * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+        sector.y * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+        Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
+        Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS)
+    ) then
+      goto continue_sector_loop
+    end
+
+    for _, chunk in ipairs(sector.chunks) do
+
+      if (
+        not Battle.current.ui.cam:rectInView(
+          chunk.x * Battle.CHUNK_SIZE_IN_PIXELS,
+          chunk.y * Battle.CHUNK_SIZE_IN_PIXELS,
+          Battle.CHUNK_SIZE_IN_PIXELS,
+          Battle.CHUNK_SIZE_IN_PIXELS)
+      ) then
+        goto continue_chunk_loop
+      end
+
+      -- draw the units of the chunk
+      for _, unit in ipairs(chunk.units) do unit:draw() end
+      for _, po in ipairs(chunk.passive_objects) do po:draw() end
+
+      :: continue_chunk_loop ::
+
+    end -- end chunk-loop
+
+    :: continue_sector_loop ::
+
+  end -- end sector-loop
+
 
   for _, unit in ipairs(Battle.current.ui.currently_selected_units) do
     -- draw circle around the unit

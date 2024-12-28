@@ -1,28 +1,41 @@
---- @class Unit
---- @field target Unit
---- @field walk_queue table<{x: number, y: number}>
---- @field owner FactionState
---- @field cls UnitClass
---- @field x number
---- @field y number
---- @field hp number
---- @field shooting_cooldown number
---- @field rotation number
---- @field chunk_i_am_on Chunk
+-------------------------------------------------------------------------
+--- @class Unit soldiers, tanks, turrets, defensive positions, etc.
+--- @field target Unit The current target of this unit.
+--- @field walk_queue table<{x: number, y: number}> a list of positions to walk to
+--- @field owner FactionState the faction that owns this unit
+--- @field cls UnitClass the class of this unit
+--- @field x number the current x position
+--- @field y number the current y position
+--- @field hp number the current health points
+--- @field shooting_cooldown number the time until the next shot can be fired
+--- @field rotation number the current rotation of the unit
+--- @field chunk_i_am_on Chunk the chunk this unit is currently on
 --- @field turrets Unit[] a list of my turrets
+---
+-- todo: implement passengers
+-- todo: implement turrets, turrets need to know their parent unit
+-- todo: implement fleeing mode
+-- todo: implement fallback
+------------------------------------------------------------------------
 Unit = {
+  --- @type Unit[]
   instances = {}
 }
+
 Unit.__index = Unit
 
+------------------------------------------------------------------------
 --- Create a unit on the battle-field.
 --- @param x number
 --- @param y number
 --- @param unit_class UnitClass
 --- @param owner FactionState
 --- @return Unit
+------------------------------------------------------------------------
 function Unit.new(x, y, unit_class, owner)
+
   local self = setmetatable({}, Unit)
+
   self.cls = unit_class
   self.owner = owner
   self.x = x
@@ -36,13 +49,23 @@ function Unit.new(x, y, unit_class, owner)
   self.turrets = {}
   self.passengers = {} -- some units can carry other units: lkw, tanks, etc.
   self.time_til_next_look_for_target = math.random(0, 3)
+
   -- todo: if this unitclass has other units as turrets: create those turrets here
   self:update_my_chunk()
+
   table.insert(Unit.instances, self)
   return self
-end
 
+end -- new
+
+
+------------------------------------------------------------------------
+--- Draw the unit on the battle-field.
+------------------------------------------------------------------------
 function Unit:draw()
+
+  Unit.assert(self)
+
   -- called in draw_the_battle_field.lua
   -- draw a circle at the unit's position in the color of the faction
   -- filled
@@ -69,11 +92,15 @@ function Unit:draw()
   love.graphics.setColor(self.owner.faction.color)
   love.graphics.circle("line", self.x, self.y, weapon_range)
 
-end
+end -- draw
 
+
+------------------------------------------------------------------------
 --- Check the neighbour chunks and my chunk for a target
 --- in range to shoot at.
 --- @param dt number
+-- todo: make this smarter...
+-------------------------------------------------------------------------
 function Unit:look_for_target(dt)
 
   if self.chunk_i_am_on == nil then
@@ -98,11 +125,16 @@ function Unit:look_for_target(dt)
     self.time_til_next_look_for_target = math.random(0, 0.2)
 
   end
-end
+end -- look_for_target
 
+
+--------------------------------------------------------------------
 --- Move the unit if not in range of target.
 --- @param dt number
+--------------------------------------------------------------------
 function Unit:move(dt)
+
+  Unit.assert(self)
 
   if #self.walk_queue > 0 and self.target == nil then
     local next_pos = self.walk_queue[1]
@@ -119,10 +151,17 @@ function Unit:move(dt)
 
   self:update_my_chunk()
 
-end
+end -- move
 
---- Fight: shoot if you can.
+
+--------------------------------------------------------------------
+--- Fight the target if in range.
+--- Currently: shoot if you can.
+--- @param dt number
+--------------------------------------------------------------------
 function Unit:fight(dt)
+
+  Unit.assert(self)
 
   -- if i have a target
   -- if my shooting_cooldown is 0
@@ -147,9 +186,16 @@ function Unit:fight(dt)
   self.shooting_cooldown = self.cls.shooting_cooldown
   assert(type(self.shooting_cooldown) == "number", "Expected number, got " .. type(self.shooting_cooldown))
 
-end
+end -- fight
 
+
+-----------------------------------------------------------------------
+--- Update the chunk the unit is registered on.
+--- This is used to keep track of the units on the map.
+-----------------------------------------------------------------------
 function Unit:update_my_chunk()
+
+  Unit.assert(self)
 
   local chunk = Chunk.get(self.x, self.y)
 
@@ -175,52 +221,76 @@ function Unit:update_my_chunk()
   self.chunk_i_am_on = chunk
   table.insert(chunk.units, self)
 
-end
+end -- update_my_chunk
 
+
+-----------------------------------------------------------------------
+--- Delete the unit after it has died; called by unit killing game logic.
+--- For example: projectile-hit logic.
+--- @param reason_of_death string
+--- @see Projectile
+-----------------------------------------------------------------------
 function Unit:delete_after_death(reason_of_death)
 
-  -- todo: create remains and blood
-  -- todo: remove from chunk
-  -- todo: remove from owner
-  -- todo: remove from instances
+  -- todo: create remains and blood based on the reason of death
 
-  if reason_of_death == "explosion" then
+  -- create remains and blood based on the reason of death
+  do
+    if reason_of_death == "explosion" then
 
-  elseif reason_of_death == "rifle" then
+    elseif reason_of_death == "rifle" then
 
-  elseif reason_of_death == "fire" then
+    elseif reason_of_death == "fire" then
 
-  end
-
-  local index = nil
-  for i, unit in ipairs(Unit.instances) do
-    if unit == self then
-      index = i
-      break
     end
   end
 
-  table.remove(Unit.instances, index)
-
-  local index = nil
-  for i, unit in ipairs(self.chunk_i_am_on.units) do
-    if unit == self then
-      index = i
-      break
+  -- remove from Unit.instances -> this is the list of all units
+  do
+    local index = nil
+    for i, unit in ipairs(Unit.instances) do
+      if unit == self then
+        index = i
+        break
+      end
     end
-  end
-  table.remove(self.chunk_i_am_on.units, index)
 
+    table.remove(Unit.instances, index)
+  end
+
+  -- remove from the chunk-list of units
+  do
+    local index = nil
+    for i, unit in ipairs(self.chunk_i_am_on.units) do
+      if unit == self then
+        index = i
+        break
+      end
+    end
+    table.remove(self.chunk_i_am_on.units, index)
+  end
+
+  -- remove from other units that have me as target
   for _, u in ipairs(Unit.instances) do
     if u.target == self then u.target = nil end
   end
 
+  -- remove my turrets if i have any
   for _, u in ipairs(self.turrets) do
     u:delete_after_death(reason_of_death)
   end
 
-end
+  -- this can be used to find bugs in state checks
+  self.dead = true
 
+end -- delete_after_death
+
+
+
+-----------------------------------------------------------------------
+--- Update all units.
+--- @param dt number
+-----------------------------------------------------------------------
 function Unit.update_all(dt)
 
   for _, unit in ipairs(Unit.instances) do
@@ -241,7 +311,19 @@ function Unit.update_all(dt)
     end
   end
 
-end
+end -- update_all
 
+
+------------------------------------------------------------------------
+--- Determine if given instance is Unit.
+--- @param x table
+--- @return boolean
+------------------------------------------------------------------------
 function Unit.is(x) return getmetatable(x) == Unit end
+
+------------------------------------------------------------------------
+--- Asserts that the given instance is a instance of Unit.
+--- @param x table
+--- @see Unit.is
+------------------------------------------------------------------------
 function Unit.assert(x) assert(Unit.is(x), "Expected Unit. Got " .. type(x)) end

@@ -1,5 +1,5 @@
 
---- @class PassiveObject body parts, bullets, blood-splatter, debris, crators, fire, smoke
+--- @class PassiveObject body parts, bullet-strain, blood-splatter, debris, crators, fire, smoke
 PassiveObject = {
   instances = {},
 }

@@ -1,7 +1,9 @@
-
+----------------------------------------
 --- @class Battle
 --- @field ui UiState
+----------------------------------------
 Battle = {
+  --- @type Battle
   current = nil, -- @type Battle
 }
 Battle.__index = Battle
@@ -14,10 +16,15 @@ Battle.SECTOR_SIZE_IN_TILES = Battle.SECTOR_SIZE_IN_CHUNKS * Battle.CHUNK_SIZE_I
 Battle.WORLD_SIZE_IN_SECTORS = 2
 Battle.WORLD_SIZE_IN_CHUNKS = Battle.WORLD_SIZE_IN_SECTORS * Battle.SECTOR_SIZE_IN_CHUNKS
 
+----------------------------------------
+--- Create a new battle.
+--- @param armies Army[]
+--- @return Battle
+----------------------------------------
 function Battle.new(
   armies
 )
-  -- reset the battle state
+  -- reset the global battle state
   do
     Projectile.instances = {}
     Unit.instances = {}
@@ -35,6 +42,7 @@ function Battle.new(
   self.armies = armies
   self.player_army = nil
   for _, army in ipairs(armies) do
+    Army.assert(army)
     if army.owner.is_player then
       self.player_army = army
     end
@@ -45,12 +53,17 @@ function Battle.new(
 
   load_all_resources()
   initialize_the_battle_field()
-  -- todo: spawn random units at the start in one chunk of two factions
 
   return self
 end
 
+
+----------------------------------------
+--- Update the battle.
+--- @param dt number
+----------------------------------------
 function Battle:update(dt)
+
   local isMiddleMousePressed = love.mouse.isDown(3) -- Middle mouse button
   local mouseX, mouseY = love.mouse.getPosition()
 
@@ -68,38 +81,54 @@ function Battle:update(dt)
   spawn_management(dt)
   ai_management(dt)
 
-  if #self.ui.currently_selected_units > 0 then
-    local rightMouseButtonPressed = love.mouse.isDown(2)
-    if rightMouseButtonPressed then
-      local x, y = self.ui.cam:transform_screen_xy_to_world_xy(love.mouse.getPosition())
-      local max_random_radius = {
-        {n=10, r = 120},
-        {n=20, r = 180}
-      }
-      local max_random_radius_max = 120
+  -- command units to walk to the mouse position
+  do
+    if #self.ui.currently_selected_units > 0 then
 
-      local radius_to_use = 0
-      for _, value in ipairs(max_random_radius) do
-        local n, r = value.n, value.r
-        if n <= #self.ui.currently_selected_units then
-          radius_to_use = r
+      local rightMouseButtonPressed = love.mouse.isDown(2)
+
+      if rightMouseButtonPressed then
+
+        local x, y = self.ui.cam:transform_screen_xy_to_world_xy(love.mouse.getPosition())
+        -- random radius in which to place the unit-target position based on the mouse position;
+        local max_random_radius = {
+          {n=10, r = 120},
+          {n=20, r = 180},
+          -- todo:  more values can be added here
+        }
+        local max_random_radius_max = 120
+
+        local radius_to_use = 0
+        for _, value in ipairs(max_random_radius) do
+          local n, r = value.n, value.r
+          if n <= #self.ui.currently_selected_units then
+            radius_to_use = r
+          end
         end
-      end
-      if radius_to_use == 0 then radius_to_use = max_random_radius_max end
 
-      for _, unit in ipairs(self.ui.currently_selected_units) do
-        local u = unit --- @type Unit
-        local random_radius = math.random(0, radius_to_use)
-        local random_angle = math.random(0, 360)
-        local x = x + random_radius * math.cos(random_angle)
-        local y = y + random_radius * math.sin(random_angle)
-        u.walk_queue = { { x = x, y = y } }
-      end
-    end
-  end
+        if radius_to_use == 0 then radius_to_use = max_random_radius_max end
+
+        for _, unit in ipairs(self.ui.currently_selected_units) do
+          local u = unit --- @type Unit
+          local random_radius = math.random(0, radius_to_use)
+          local random_angle = math.random(0, 360)
+          local x = x + random_radius * math.cos(random_angle)
+          local y = y + random_radius * math.sin(random_angle)
+          u.walk_queue = { { x = x, y = y } }
+        end -- for _, unit in ipairs(self.ui.currently_selected_units) do
+
+      end -- if rightMouseButtonPressed then
+
+    end -- if #self.ui.currently_selected_units > 0 then
+
+  end -- end command units to walk to the mouse position
 
 end
 
+
+----------------------------------------
+--- Draw the battle.
+----------------------------------------
 function Battle:draw()
   draw_the_battle_field()
 
@@ -108,5 +137,15 @@ function Battle:draw()
   love.graphics.setColor(1, 1, 1)
 end
 
+
+----------------------------------------
+--- Check if the given object is a Battle.
+--- @param x table
+--- @return boolean
+----------------------------------------
 function Battle.is(x) return getmetatable(x) == Battle end
+
+----------------------------------------
+--- Assert that the given object is a Battle.
+----------------------------------------
 function Battle.assert(x) assert(Battle.is(x), "Expected Battle. Got " .. type(x)) end

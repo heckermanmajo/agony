@@ -62,7 +62,7 @@ end
 -----------------------------------------------------------------------
 function Projectile.update_all(dt)
 
-  -- @type Projectile[]
+  --- @type Projectile[]
   local projectiles_to_remove = {}
 
   for _, projectile in ipairs(Projectile.instances) do
@@ -128,3 +128,11 @@ function Projectile.update_all(dt)
   end
 
 end -- update_all
+
+
+function Projectile.is(x) return getmetatable(x) == Projectile end
+
+function Projectile.assert(x)
+  if Projectile.is(x) then return end
+  error("Expected Projectile, got " .. type(x))
+end

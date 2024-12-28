@@ -1,6 +1,7 @@
-
+----------------------------------------
 --- Called when a battle is created.
 --- @see Battle.new
+----------------------------------------
 function initialize_the_battle_field()
 
 

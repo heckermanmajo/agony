@@ -1,8 +1,10 @@
+----------------------------------------
 --- @class Camp
 --- @field cam Camera
 --- @field mouse_click_consumed_this_frame boolean
 --- @field currently_selected_tile CampTile
 --- @field ai_army_movement_queue table<{from:CampTile, to:CampTile}>
+----------------------------------------
 Camp = {
   --- @type Camp
   current = nil,
@@ -14,9 +16,11 @@ Camp = {
 Camp.__index = Camp
 
 
+----------------------------------------
 -- region Camp.new()
 --- Creates a new Camp instance
 --- @return Camp
+----------------------------------------
 function Camp.new()
 
   local self = {}
@@ -76,11 +80,13 @@ function Camp.new()
 
   return self
 
-end
+end -- end of function Camp.new()
 
 
+----------------------------------------
 --region Camp:update()
 --- Updates the Camp instance each frame
+----------------------------------------
 function Camp:update(dt)
   Camp.button_cooldown = Camp.button_cooldown - dt
   Camp.key_cooldown = Camp.key_cooldown - dt
@@ -139,4 +145,4 @@ function Camp:update(dt)
 
   end -- end of if self.currently_selected_tile then
 
-end
+end -- end of function Camp:update()

@@ -32,7 +32,9 @@ end
 function Sector:get_map_border_chunks() end
 
 --- Get the sector at the given pixel coordinates or nil if it doesn't exist
-function Sector.get(x_pixel, y_pixel, throw) end
+function Sector.get(x_pixel, y_pixel, throw)
+  assert(false, "Not implemented")
+end
 
 function Sector.is(x) return getmetatable(x) == Sector end
 
