@@ -37,7 +37,7 @@ Man kann eine Kampange "durchspielen", aber kein menu, usw.
 - code aufräumen und alles kommentieren
 - statechecks
 
-## tech-demo (v2) - VisualFun + Gameplay
+## tech-demo (v2) - VisualFun + Gameplay-Fun
 - technology in campaign map: simple technology at first
 - tanks
 - out of map artillery
@@ -47,20 +47,19 @@ Man kann eine Kampange "durchspielen", aber kein menu, usw.
   - Stellungen: immobile transporter
 - Besseres Schuss system: projektile nur für granaten und raketen
 - explosionen
-- paratroopers
-- flammenwerfer
 - code aufräumen und alles kommentieren
 - nazi-haftes type checking
 - state-checks
 - dead bodies/blood effects
 
-## tech-demo (v2) - alles basisgameplay
+## tech-demo (v2) - more gameplay
 - menu
 
 ## undefiniert-später
 - Diplomatie
-
-
+- paratroopers
+- flammenwerfer
+- 
 ## Content stuff
 
 

@@ -5,6 +5,9 @@
 --- @field enemy_factions FactionState[]
 --- @field spawn_queue table<SquadTemplate>
 --- @field time_til_next_spawn number
+--- @field faction Faction
+--- @field is_player boolean
+--- @field instances FactionState[]
 FactionState = {
   --- @type FactionState[]
   instances = {},

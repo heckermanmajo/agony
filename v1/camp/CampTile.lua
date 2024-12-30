@@ -25,7 +25,7 @@ CampTile.__index = CampTile
 function CampTile.new(x,y, type, owner)
   if owner ~= nil then FactionState.assert(owner) end
   assert(type == "gras" or type == "water")
-  assert(x >= 0 and y >= 0)
+  --assert(x >= 0 and y >= 0)
   assert(not CampTile.instances[x] or not CampTile.instances[x][y], "Tile already exists at " .. x .. ", " .. y)
 
   local self = {}

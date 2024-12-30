@@ -57,7 +57,6 @@ function Battle.new(
   return self
 end
 
-
 ----------------------------------------
 --- Update the battle.
 --- @param dt number
@@ -69,6 +68,7 @@ function Battle:update(dt)
 
   self.ui.cam:handleMouseDrag(isMiddleMousePressed, mouseX, mouseY)
   self.ui.cam:apply_wasd_movement(dt)
+  self.ui:send_selected_units_to_mouse_click_target()
 
   if UiState.key_press_cooldown > 0 then
     UiState.key_press_cooldown = UiState.key_press_cooldown - dt
@@ -76,55 +76,16 @@ function Battle:update(dt)
 
   Projectile.update_all(dt)
   Unit.update_all(dt)
-    --Unit.update_all(dt)
   PassiveObject.update_all(dt)
   spawn_management(dt)
   ai_management(dt)
 
-  -- command units to walk to the mouse position
-  do
-    if #self.ui.currently_selected_units > 0 then
+  for _, u in ipairs(Unit.instances) do u:update_my_chunk() end
 
-      local rightMouseButtonPressed = love.mouse.isDown(2)
-
-      if rightMouseButtonPressed then
-
-        local x, y = self.ui.cam:transform_screen_xy_to_world_xy(love.mouse.getPosition())
-        -- random radius in which to place the unit-target position based on the mouse position;
-        local max_random_radius = {
-          {n=10, r = 120},
-          {n=20, r = 180},
-          -- todo:  more values can be added here
-        }
-        local max_random_radius_max = 120
-
-        local radius_to_use = 0
-        for _, value in ipairs(max_random_radius) do
-          local n, r = value.n, value.r
-          if n <= #self.ui.currently_selected_units then
-            radius_to_use = r
-          end
-        end
-
-        if radius_to_use == 0 then radius_to_use = max_random_radius_max end
-
-        for _, unit in ipairs(self.ui.currently_selected_units) do
-          local u = unit --- @type Unit
-          local random_radius = math.random(0, radius_to_use)
-          local random_angle = math.random(0, 360)
-          local x = x + random_radius * math.cos(random_angle)
-          local y = y + random_radius * math.sin(random_angle)
-          u.walk_queue = { { x = x, y = y } }
-        end -- for _, unit in ipairs(self.ui.currently_selected_units) do
-
-      end -- if rightMouseButtonPressed then
-
-    end -- if #self.ui.currently_selected_units > 0 then
-
-  end -- end command units to walk to the mouse position
+  if DEBUG then for _, c in ipairs(Chunk.instances) do c:check_chunk_state() end end
+  for _, c in ipairs(Chunk.instances) do c:update_owner_of_chunk() end
 
 end
-
 
 ----------------------------------------
 --- Draw the battle.
@@ -136,7 +97,6 @@ function Battle:draw()
   self.ui:display_and_handle_select_squad_mode()
   love.graphics.setColor(1, 1, 1)
 end
-
 
 ----------------------------------------
 --- Check if the given object is a Battle.

@@ -15,7 +15,7 @@ GermanEmpire = {
   armor_squads = {
 
   },
-  support_calls = {
+  support_squads = {
 
   },
   global_technologies = {

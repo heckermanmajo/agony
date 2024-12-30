@@ -4,8 +4,11 @@ function draw_the_battle_field()
 
   Battle.current.ui.cam:attach()
 
+
+  -- for each sector
   for _, sector in ipairs(Sector.instances) do
 
+    -- ignore the sector if it is not in the view of the camera
     if (
       not Battle.current.ui.cam:rectInView(
         sector.x * Battle.SECTOR_SIZE_IN_TILES * Battle.TILE_SIZE_IN_PIXELS,
@@ -16,8 +19,10 @@ function draw_the_battle_field()
       goto continue_sector_loop
     end
 
+    -- for each chunk in the sector
     for _, chunk in ipairs(sector.chunks) do
 
+      -- ignore the chunk if it is not in the view of the camera
       if (
         not Battle.current.ui.cam:rectInView(
           chunk.x * Battle.CHUNK_SIZE_IN_PIXELS,
@@ -28,27 +33,31 @@ function draw_the_battle_field()
         goto continue_chunk_loop
       end
 
+      -- draw the tile-textures if we are not in minimap-mode
       if not Battle.current.ui.cam.minimap then
 
+        -- draw the tile-textures
         for _, tile in ipairs(chunk.tiles) do
-          -- draw a rect around te sector
-          love.graphics.setColor(1, 1, 0)
-
-          --love.graphics.rectangle("line",
-          -- tile.x * Battle.TILE_SIZE_IN_PIXELS,
-          -- tile.y * Battle.TILE_SIZE_IN_PIXELS,
-          --  Battle.TILE_SIZE_IN_PIXELS,
-          --  Battle.TILE_SIZE_IN_PIXELS
-          -- )
-
-          -- draw the tile-texture
           local tile_x_pixel = tile.x * Battle.TILE_SIZE_IN_PIXELS
           local tile_y_pixel = tile.y * Battle.TILE_SIZE_IN_PIXELS
           Atlas.all["map_tiles"]:draw_quad("gras", tile_x_pixel, tile_y_pixel)
-
         end
 
       end -- end if not Battle.current.ui.cam.min
+
+      -- draw an overlay over the chunk in the color of the owner-faction
+      if chunk.current_owner ~= nil then
+        local color = chunk.current_owner.faction.color
+        local alpha = 0.1
+        if Battle.current.ui.cam.minimap then alpha = 0.6 end
+        love.graphics.setColor(color[1], color[2], color[3], alpha)
+        love.graphics.rectangle("fill",
+          chunk.x * Battle.CHUNK_SIZE_IN_PIXELS,
+          chunk.y * Battle.CHUNK_SIZE_IN_PIXELS,
+          Battle.CHUNK_SIZE_IN_PIXELS,
+          Battle.CHUNK_SIZE_IN_PIXELS
+        )
+      end
 
       -- draw a rect around te sector
       love.graphics.setColor(1, 0, 1)

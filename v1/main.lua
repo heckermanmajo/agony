@@ -1,3 +1,6 @@
+--- @type boolean Allows to enable or disable debug mode; state checks, type checks, etc.
+DEBUG = true
+
 require "shared/Utils"
 require "shared/Atlas"
 require "shared/Camera"
@@ -14,7 +17,7 @@ require "battle/PassiveObject"
 require "battle/functions/initialize_the_battle_field"
 require "battle/functions/load_all_resources"
 require "battle/functions/draw_the_battle_field"
-require "battle/functions/create_formation"
+--require "battle/functions/create_formation"
 require "battle/functions/spawn_management"
 require "battle/functions/ai_management"
 

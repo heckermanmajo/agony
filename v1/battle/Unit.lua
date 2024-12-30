@@ -149,8 +149,6 @@ function Unit:move(dt)
     end
   end
 
-  self:update_my_chunk()
-
 end -- move
 
 
@@ -197,6 +195,8 @@ function Unit:update_my_chunk()
 
   Unit.assert(self)
 
+  if self:is_out_of_world() then return end
+
   local chunk = Chunk.get(self.x, self.y)
 
   if chunk == nil then
@@ -207,7 +207,7 @@ function Unit:update_my_chunk()
   if chunk == self.chunk_i_am_on then return end
 
   if self.chunk_i_am_on ~= nil then
-    -- this can be nil at the start
+    -- this can be nil at the start; after unit creation
     local index = nil
     for i, unit in ipairs(self.chunk_i_am_on.units) do
       if unit == self then
@@ -313,6 +313,20 @@ function Unit.update_all(dt)
 
 end -- update_all
 
+
+------------------------------------------------------------------------
+--- Returns true if the unit is out of this world.
+--- @return boolean
+------------------------------------------------------------------------
+function Unit:is_out_of_world()
+  local world_size = Battle.WORLD_SIZE_IN_CHUNKS * Battle.CHUNK_SIZE_IN_PIXELS
+  return (
+    self.x > world_size
+      or self.x < 0
+      or self.y > world_size
+      or self.y < 0
+  )
+end
 
 ------------------------------------------------------------------------
 --- Determine if given instance is Unit.

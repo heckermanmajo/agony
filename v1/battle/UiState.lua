@@ -255,6 +255,56 @@ function UiState:display_and_handle_select_squad_mode()
 end -- end display_and_handle_select_squad_mode
 
 
+function UiState:send_selected_units_to_mouse_click_target()
+
+  if #self.currently_selected_units > 0 then
+
+    local rightMouseButtonPressed = love.mouse.isDown(2)
+
+    if rightMouseButtonPressed then
+
+      local x, y = self.cam:transform_screen_xy_to_world_xy(love.mouse.getPosition())
+      -- do not allow to send units out of the map
+      do
+        local world_size = Battle.CHUNK_SIZE_IN_PIXELS * Battle.WORLD_SIZE_IN_CHUNKS
+        local out_of_bounds = x < 0 or x > world_size or y < 0 or y > world_size
+        if out_of_bounds then return end
+      end
+      -- random radius in which to place the unit-target position based on the mouse position;
+      local max_random_radius = {
+        { n = 10, r = 120 },
+        { n = 20, r = 180 },
+        -- todo:  more values can be added here
+      }
+      local max_random_radius_max = 120
+
+      local radius_to_use = 0
+      for _, value in ipairs(max_random_radius) do
+        local n, r = value.n, value.r
+        if n <= #self.currently_selected_units then
+          radius_to_use = r
+        end
+      end
+
+      if radius_to_use == 0 then radius_to_use = max_random_radius_max end
+
+      for _, unit in ipairs(self.currently_selected_units) do
+        local u = unit --- @type Unit
+        local random_radius = math.random(0, radius_to_use)
+        local random_angle = math.random(0, 360)
+        local x = x + random_radius * math.cos(random_angle)
+        local y = y + random_radius * math.sin(random_angle)
+        u.walk_queue = { { x = x, y = y } }
+      end -- for _, unit in ipairs(self.currently_selected_units) do
+
+    end -- if rightMouseButtonPressed then
+
+  end -- if #self.currently_selected_units > 0 then
+
+end -- end command units to walk to the mouse position
+
+
+
 ------------------------------------------------------------------------
 --- Type check for UiState objects
 --- @param x any
