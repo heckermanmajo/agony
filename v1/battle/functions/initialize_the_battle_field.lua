@@ -41,7 +41,26 @@ function initialize_the_battle_field()
   end -- end initialize the sectors, chunks, tiles
 
 
-  -- todo: create the spawn-sectors
+  -- make the bottom chunks be owned by the player
+  -- make the top chunks be owned by the enemy
+
+  local player_army = Battle.current.player_army
+  local enemy_army = nil
+  for _, army in ipairs(Battle.current.armies) do
+    if not army.owner.is_player then
+      enemy_army = army
+    end
+  end
+
+  for _, chunk in ipairs(Chunk.instances) do
+    if chunk.y == 0 then
+      chunk.current_owner = enemy_army.owner
+    elseif chunk.y == Battle.WORLD_SIZE_IN_CHUNKS - 1 then
+      chunk.current_owner = player_army.owner
+    end
+  end
+
+
 
   -- todo: create objects on the map
 

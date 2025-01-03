@@ -8,6 +8,7 @@
 --- @field faction Faction
 --- @field is_player boolean
 --- @field instances FactionState[]
+--- @field defeated_in_this_current_battle boolean
 FactionState = {
   --- @type FactionState[]
   instances = {},
@@ -25,6 +26,7 @@ function FactionState.new(faction)
   self.is_player = false
   self.spawn_queue = {}
   self.time_til_next_spawn = 0
+  self.defeated_in_this_current_battle = false
   table.insert(FactionState.instances, self)
   return self
 end

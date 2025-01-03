@@ -1,6 +1,9 @@
 ----------------------------------------
 --- @class Battle
 --- @field ui UiState
+--- @field armies Army[]
+--- @field player_army Army
+--- @field current Battle
 ----------------------------------------
 Battle = {
   --- @type Battle
@@ -33,6 +36,13 @@ function Battle.new(
     Chunk.instances = {}
     Tile.instances = {}
     Battle.current = nil
+  end
+
+  -- if this is true all units flee and the faction is defeated
+  -- if more than two factions are fighting against each other, it is possible that
+  -- the fight continues after one faction is defeated
+  for _, faction_state in  ipairs(FactionState.instances) do
+    faction_state.defeated_in_this_current_battle = false
   end
 
   local self = {}
@@ -79,8 +89,12 @@ function Battle:update(dt)
   PassiveObject.update_all(dt)
   spawn_management(dt)
   ai_management(dt)
+  end_battle_condition_check(dt)
 
-  for _, u in ipairs(Unit.instances) do u:update_my_chunk() end
+  for _, u in ipairs(Unit.instances) do
+    u:update_my_chunk()
+    u:think(dt)
+  end
 
   if DEBUG then for _, c in ipairs(Chunk.instances) do c:check_chunk_state() end end
   for _, c in ipairs(Chunk.instances) do c:update_owner_of_chunk() end

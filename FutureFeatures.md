@@ -1,11 +1,19 @@
 
 ## Nächste Todos
+Der fokus liegt darauf, erstmal etwas spielbares zu produzieren, das
+heißt wir machen 3 oder 4 squads mit unterschiedlicher Infantrie.
+Simple ai und dann so, dass die Campaign karte, punkte sich in die 
+rts battles übertragen und man verliert, wenn man nur
+noch 2 chunks oder so hat.
+
 - Battle gewinnen/verlieren und dann anwenden
   - Sektoren erobern
-- Simple ai moves
+- Simple ai moves: units müssen losgeschikt werden 
+  - alle felder einzunehmen
+  - Sector conquer target
 - armeen erstellen
 - armeen updaten
-- commenten
+- commented
 
 
 ## Tech-Demo (v1) - basic gameloop

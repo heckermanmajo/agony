@@ -11,6 +11,9 @@
 --- @field rotation number the current rotation of the unit
 --- @field chunk_i_am_on Chunk the chunk this unit is currently on
 --- @field turrets Unit[] a list of my turrets
+--- @field passengers Unit[] a list of units that are in this unit
+--- @field time_til_next_look_for_target number the time until the next target search
+--- @field chunk_conquer_target Chunk the chunk this unit is currently trying to conquer; used by ai-units only
 ---
 -- todo: implement passengers
 -- todo: implement turrets, turrets need to know their parent unit
@@ -49,6 +52,7 @@ function Unit.new(x, y, unit_class, owner)
   self.turrets = {}
   self.passengers = {} -- some units can carry other units: lkw, tanks, etc.
   self.time_til_next_look_for_target = math.random(0, 3)
+  self.chunk_conquer_target = nil
 
   -- todo: if this unitclass has other units as turrets: create those turrets here
   self:update_my_chunk()
@@ -185,6 +189,31 @@ function Unit:fight(dt)
   assert(type(self.shooting_cooldown) == "number", "Expected number, got " .. type(self.shooting_cooldown))
 
 end -- fight
+
+function Unit:think(dt)
+
+  if self.owner.is_player then return end
+
+  if self.chunk_conquer_target ~= nil then
+
+    if self.target == nil then
+
+      if #self.walk_queue == 0 then
+
+        local x = self.chunk_conquer_target.x * Battle.CHUNK_SIZE_IN_PIXELS + math.random(0, Battle.CHUNK_SIZE_IN_PIXELS)
+        local y = self.chunk_conquer_target.y * Battle.CHUNK_SIZE_IN_PIXELS + math.random(0, Battle.CHUNK_SIZE_IN_PIXELS)
+
+        self.walk_queue = {
+          {x = x, y = y}
+        }
+
+      end
+
+    end
+
+  end
+
+end
 
 
 -----------------------------------------------------------------------

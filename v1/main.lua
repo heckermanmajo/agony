@@ -20,6 +20,7 @@ require "battle/functions/draw_the_battle_field"
 --require "battle/functions/create_formation"
 require "battle/functions/spawn_management"
 require "battle/functions/ai_management"
+require "battle/functions/end_battle_condition_check"
 
 require "camp/Army"
 require "camp/Camp"

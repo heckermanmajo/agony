@@ -65,10 +65,12 @@ function Projectile.update_all(dt)
   --- @type Projectile[]
   local projectiles_to_remove = {}
 
+  local projectile_speed = 400
+
   for _, projectile in ipairs(Projectile.instances) do
 
-    projectile.x = projectile.x + math.cos(projectile.direction) * 100 * dt
-    projectile.y = projectile.y + math.sin(projectile.direction) * 100 * dt
+    projectile.x = projectile.x + math.cos(projectile.direction) * projectile_speed * dt
+    projectile.y = projectile.y + math.sin(projectile.direction) * projectile_speed * dt
 
     -- todo: check if i have exeeded the range; if so delete me: explosion, crator or smoke
 
