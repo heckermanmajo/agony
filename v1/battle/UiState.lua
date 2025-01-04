@@ -194,9 +194,13 @@ function UiState:display_and_handle_select_squad_mode()
         love.graphics.setColor(1, 0, 0)
         love.graphics.rectangle("line", icon_x, icon_y, 64, 64)
 
+        local i_have_enough_money = FactionState.get_current_player_faction().money >= costs_in_command_points
+
         -- if button is clicked: add this squad to the spawn queue
-        if love.mouse.isDown(1) and UiState.key_press_cooldown <= 0 then
+        if love.mouse.isDown(1) and UiState.key_press_cooldown <= 0 and i_have_enough_money then
           print("selected squad " .. index)
+          -- apply the money costs
+          FactionState.get_current_player_faction().money = FactionState.get_current_player_faction().money - costs_in_command_points
           local squad = FactionState.get_current_player_faction().faction.inf_squads[index]
           UiState.key_press_cooldown = 0.3
           -- todo: insert squad into spawn queue -> of army
@@ -302,7 +306,6 @@ function UiState:send_selected_units_to_mouse_click_target()
   end -- if #self.currently_selected_units > 0 then
 
 end -- end command units to walk to the mouse position
-
 
 
 ------------------------------------------------------------------------

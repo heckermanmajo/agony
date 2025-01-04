@@ -52,7 +52,7 @@ function Unit.new(x, y, unit_class, owner)
   self.turrets = {}
   self.passengers = {} -- some units can carry other units: lkw, tanks, etc.
   self.time_til_next_look_for_target = math.random(0, 3)
-  self.chunk_conquer_target = nil
+  self.chunk_conquer_target = nil -- see battle/functions/ai_management.lua
 
   -- todo: if this unitclass has other units as turrets: create those turrets here
   self:update_my_chunk()

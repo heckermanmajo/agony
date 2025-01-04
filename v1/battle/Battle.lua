@@ -109,6 +109,12 @@ function Battle:draw()
 
   self.ui:draw_and_handle_unit_selection_with_mouse()
   self.ui:display_and_handle_select_squad_mode()
+
+  -- draw the current players army command points
+  local command_points = FactionState.get_current_player_faction().money
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print("Command Points: " .. command_points, 10, 10)
+
   love.graphics.setColor(1, 1, 1)
 end
 

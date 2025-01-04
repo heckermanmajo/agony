@@ -46,6 +46,7 @@ function ai_management(dt)
       do
 
         if cooldowns[bf].spawn <= 0 then
+          -- todo: apply the costs
           local squad = GermanEmpire.inf_squads[1]
           table.insert(bf.spawn_queue, squad)
           bf.time_til_next_spawn = squad.time_til_deployment
