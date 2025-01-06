@@ -1,12 +1,8 @@
-
 --- @class CampTile
 --- @field x number
 --- @field y number
 --- @field type string
 --- @field owner FactionState
---- @field settlement boolean does this tile have a settlement?
---- @field factory boolean does this tile have a factory?
---- @field logistics_camp boolean does this tile have an army camp?
 --- @field army Army
 CampTile = {
   --- @type CampTile[]
@@ -22,7 +18,7 @@ CampTile.__index = CampTile
 --- @param owner FactionState
 --- @return CampTile
 ----------------------------------------
-function CampTile.new(x,y, type, owner)
+function CampTile.new(x, y, type, owner)
   if owner ~= nil then FactionState.assert(owner) end
   assert(type == "gras" or type == "water")
   --assert(x >= 0 and y >= 0)
@@ -35,9 +31,10 @@ function CampTile.new(x,y, type, owner)
   self.y = y
   self.type = type
   self.owner = owner
-  self.settlement = false
-  self.factory = false
-  self.logistics_camp = false
+  -- DONT INTRODUCE TO MUCH COMPLEXITY BEFORE THE BASIC GAMEPLAY EVEN WORKS
+  --self.settlement = false
+  --self.factory = false
+  --self.logistics_camp = false
   self.army = nil
 
   table.insert(CampTile.instances, self)
@@ -45,6 +42,11 @@ function CampTile.new(x,y, type, owner)
   return self
 end
 
+local cooldown = 0
+
+function CampTile.update_cool_down(dt)
+  cooldown = cooldown - dt
+end
 
 function CampTile:render_and_handle_ui(x)
 
@@ -59,18 +61,49 @@ function CampTile:render_and_handle_ui(x)
   if self.owner then owner = self.owner.faction.name end
 
   love.graphics.setColor(1, 1, 1)
-  love.graphics.print("Tile: " .. self.x .. ", " .. self.y, x+10, 10)
-  love.graphics.print("Type: " .. self.type, x+10, 30)
-  love.graphics.print("Owner: " .. owner, x+10, 50)
+  love.graphics.print("Tile: " .. self.x .. ", " .. self.y, x + 10, 10)
+  love.graphics.print("Type: " .. self.type, x + 10, 30)
+  love.graphics.print("Owner: " .. owner, x + 10, 50)
   local is_player = "no"
   if self.owner and self.owner.is_player then is_player = "yes" end
-  love.graphics.print("Is player: " .. is_player, x+10, 70)
+  love.graphics.print("Is player: " .. is_player, x + 10, 70)
 
   local army = "none"
   if self.army then army = "yes" end
-  love.graphics.print("Has army: " .. army, x+10, 90)
+  love.graphics.print("Has army: " .. army, x + 10, 90)
   if self.army then
-    love.graphics.print("Command points: " .. self.army.command_points, x+10, 110)
+    love.graphics.print("Command points: " .. self.army.command_points, x + 10, 110)
+  end
+
+  if self.owner == FactionState.get_current_player_faction() then
+    if self.army then
+      -- buy command points for this army-button
+      local costs = 10
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.print("Buy 100 command points for " .. costs .. " money", x + 10, 150)
+      if Utils.mouse_is_over(x + 10, 150, 300, 20) and love.mouse.isDown(1) and cooldown <= 0 then
+        Camp.mouse_click_consumed_this_frame = true
+        if FactionState.get_current_player_faction().money >= costs then
+          FactionState.get_current_player_faction().money = FactionState.get_current_player_faction().money - costs
+          self.army.command_points = self.army.command_points + 100
+          cooldown = 0.5
+        end
+      end
+    else
+      -- buy army-button
+      local costs = 10
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.print("Buy army (100) for " .. costs .. " money", x + 10, 150)
+      if Utils.mouse_is_over(x + 10, 150, 300, 20) and love.mouse.isDown(1) and cooldown <= 0  then
+        Camp.mouse_click_consumed_this_frame = true
+        if FactionState.get_current_player_faction().money >= costs then
+          FactionState.get_current_player_faction().money = FactionState.get_current_player_faction().money - costs
+          self.army = Army.new(100, self)
+          cooldown = 0.5
+        end
+      end
+    end
+
   end
 
 end

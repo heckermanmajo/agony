@@ -91,6 +91,8 @@ function Camp:update(dt)
   Camp.button_cooldown = Camp.button_cooldown - dt
   Camp.key_cooldown = Camp.key_cooldown - dt
 
+  CampTile.update_cool_down(dt)
+
   handle_ai_movements(dt)
 
   -- handle camera movement

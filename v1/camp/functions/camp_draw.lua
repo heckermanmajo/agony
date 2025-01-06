@@ -1,7 +1,6 @@
-
-
 -- region Camp:draw()
 function Camp:draw()
+
   if Camp.button_cooldown < 0 then
     Camp.mouse_click_consumed_this_frame = false
   end
@@ -89,12 +88,30 @@ function Camp:draw()
 
   -- todo: next round on enter ...
 
+  local mouse_is_over_header_bar = Utils.mouse_is_over(0, 0, love.graphics.getWidth() - 360, 50)
+  local mouse_is_over_right_side = Utils.mouse_is_over(love.graphics.getWidth() - 360, 0, 360, love.graphics.getHeight())
+
+  local mouse_is_over_ui = false
+  if self.currently_selected_tile == nil then
+    mouse_is_over_ui = mouse_is_over_header_bar
+  else
+    mouse_is_over_ui = mouse_is_over_header_bar or mouse_is_over_right_side
+  end
+
   for _, ct in ipairs(CampTile.instances) do
+
     local absolute_x = ct.x * 128
     local absolute_y = ct.y * 128
     local mouse_hovers = Utils.mouse_is_over(absolute_x, absolute_y, 128, 128, self.cam)
+    local valid_click = (
+      mouse_hovers
+        and love.mouse.isDown(1)
+        and not Camp.mouse_click_consumed_this_frame
+        and Camp.button_cooldown < 0
+        and not mouse_is_over_ui
+    )
 
-    if mouse_hovers and love.mouse.isDown(1) and not Camp.mouse_click_consumed_this_frame and Camp.button_cooldown < 0 then
+    if valid_click then
       Camp.mouse_click_consumed_this_frame = true
       self.currently_selected_tile = ct
       --print(Utils.str_table(ct.army.campaign_tile))
