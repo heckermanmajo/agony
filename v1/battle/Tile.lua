@@ -11,6 +11,9 @@ Tile.__index = Tile
 
 function Tile.new(x,y)
 
+  assert(type(x) == "number", "Expected number, got " .. type(x))
+  assert(type(y) == "number", "Expected number, got " .. type(y))
+
   local self = {}
   setmetatable(self, Tile)
 

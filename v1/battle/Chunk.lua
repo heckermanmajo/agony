@@ -17,13 +17,16 @@ Chunk = {
 }
 Chunk.__index = Chunk
 
-
 ----------------------------------------
 --- Create a new chunk.
 --- @param x number
 --- @param y number
 ----------------------------------------
-function Chunk.new(x,y)
+function Chunk.new(x, y)
+
+  assert(type(x) == "number", "Expected number, got " .. type(x))
+  assert(type(y) == "number", "Expected number, got " .. type(y))
+
   local self = {}
   setmetatable(self, Chunk)
 
@@ -50,10 +53,12 @@ end
 --- @return Chunk|nil
 ----------------------------------------
 function Chunk.get(x_pixel, y_pixel, throw)
+
   throw = throw or false
   assert(type(x_pixel) == "number", "Expected x_pixel to be a number, got " .. type(x_pixel))
   assert(type(y_pixel) == "number", "Expected y_pixel to be a number, got " .. type(y_pixel))
   assert(type(throw) == "boolean", "Expected throw to be a boolean, got " .. type(throw))
+
   local x = math.floor(x_pixel / Battle.CHUNK_SIZE_IN_PIXELS)
   local y = math.floor(y_pixel / Battle.CHUNK_SIZE_IN_PIXELS)
   local exists = Chunk.instances_on_xy[x] and Chunk.instances_on_xy[x][y]
@@ -66,8 +71,9 @@ end
 --- @return Chunk[]
 ----------------------------------------
 function Chunk:get_neighbours(not_diagonal)
-  local directions = {{1,0}, {0,1}, {-1,0}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}}
-  if not_diagonal then directions = {{1,0}, {0,1}, {-1,0}, {0,-1}} end
+  Chunk.assert(self)
+  local directions = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } }
+  if not_diagonal then directions = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } } end
   local neighbours = {}
   for _, direction in ipairs(directions) do
     local x = self.x + direction[1]
@@ -84,6 +90,7 @@ end
 --- @see Unit:update_my_chunk
 ----------------------------------------
 function Chunk:check_chunk_state()
+  Chunk.assert(self)
   for _, u in ipairs(self.units) do
     if not u:is_out_of_world() then
       if u.x < self.x * Battle.CHUNK_SIZE_IN_PIXELS or u.x >= (self.x + 1) * Battle.CHUNK_SIZE_IN_PIXELS then
@@ -95,7 +102,6 @@ function Chunk:check_chunk_state()
     end
   end
 end
-
 
 ----------------------------------------
 --- Updates the owner of the chunk: used to determine map control.

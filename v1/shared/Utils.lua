@@ -22,6 +22,9 @@ function Utils.find(table, value)
   return nil
 end
 
+--- Returns a string representation of a table.
+--- @param tbl table The table to convert to a string
+--- @param visited table|nil A table to keep track of visited tables
 function Utils.str_table(tbl, visited)
 
   if type(tbl) ~= "table" then

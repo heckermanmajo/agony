@@ -1,10 +1,23 @@
+
+--------------------------------------------------------------------------------
+--- Draw the battle field.
+--------------------------------------------------------------------------------
 function draw_the_battle_field()
 
   love.graphics.setColor(1, 1, 1)
-
   Battle.current.ui.cam:attach()
 
-
+  --
+  --
+  --
+  --
+  --
+  -- Draw tiles of chunks in view.
+  --
+  --
+  --
+  --
+  --
   -- for each sector
   for _, sector in ipairs(Sector.instances) do
 
@@ -87,6 +100,17 @@ function draw_the_battle_field()
 
   end -- end sector-loop
 
+  --
+  --
+  --
+  --
+  --
+  -- Draw units and passive objects based on their position.
+  --
+  --
+  --
+  --
+  --
 
   for _, sector in ipairs(Sector.instances) do
 
@@ -124,6 +148,17 @@ function draw_the_battle_field()
 
   end -- end sector-loop
 
+  --
+  --
+  --
+  --
+  --
+  -- Draw the selection circles around the selected units.
+  --
+  --
+  --
+  --
+  --
 
   for _, unit in ipairs(Battle.current.ui.currently_selected_units) do
     -- draw circle around the unit
@@ -132,7 +167,15 @@ function draw_the_battle_field()
     love.graphics.circle("line", unit.x, unit.y, radius)
   end
 
+  --
+  --
+  --
+
   Projectile.draw_all()
+
+  --
+  --
+  --
 
   Battle.current.ui.cam:detach()
 

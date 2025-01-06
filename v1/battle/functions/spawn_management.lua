@@ -1,6 +1,7 @@
-
-
+-----------------------------------------------------------------------
+--- Helper function to get all chunks at the top of the map.
 --- @return Chunk[]
+-----------------------------------------------------------------------
 local function get_top_chunks()
   local chunks = {}
   for _, chunk in ipairs(Chunk.instances) do
@@ -11,7 +12,10 @@ local function get_top_chunks()
   return chunks
 end
 
+-----------------------------------------------------------------------
+--- Helper function to get all chunks at the bottom of the map.
 --- @return Chunk[]
+-----------------------------------------------------------------------
 local function get_bottom_chunks()
   local chunks = {}
   for _, chunk in ipairs(Chunk.instances) do
@@ -23,6 +27,7 @@ local function get_bottom_chunks()
 end
 
 
+-----------------------------------------------------------------------
 --- Spawn a squad of units based on the given squad template and faction.
 ---
 --- The units will spawn at the bottom of the map if the faction is the player,
@@ -30,6 +35,7 @@ end
 ---
 --- @param squad SquadTemplate
 --- @param faction Faction
+-----------------------------------------------------------------------
 local function spawn_squad_of_units(squad, faction)
 
   local chunks
@@ -51,6 +57,14 @@ local function spawn_squad_of_units(squad, faction)
 end
 
 
+-----------------------------------------------------------------------
+--- Spawn based on the spawn queue of each faction.
+---
+--- This function is called every frame and checks if it is time to spawn
+--- a squad of units for each faction.
+---
+--- @param dt number the time since the last frame in seconds
+-----------------------------------------------------------------------
 function spawn_management(dt)
 
   -- all factions can spawn
@@ -65,7 +79,7 @@ function spawn_management(dt)
       if is_time_to_spawn then
 
         local squad = table.remove(bf.spawn_queue, 1)
-        -- SquadTemplate.assert(squad) -  todo: implement this
+        -- SquadTemplate.assert(squad) -  todo: check this type ...
         spawn_squad_of_units(squad, bf)
 
         if #bf.spawn_queue > 0 then

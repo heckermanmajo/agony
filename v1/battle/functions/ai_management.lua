@@ -1,9 +1,25 @@
+
+--- @type table<FactionState, table<string, number>> list of cooldowns for each factions ai management
 local cooldowns = {}
 
+----------------------------------------------------------------
+--- Simple helper function to calculate the distance between two points
+--- @param x1 number
+--- @param y1 number
+--- @param x2 number
+--- @param y2 number
+--- @return number
+----------------------------------------------------------------
 local function get_distance(x1, y1, x2, y2)
   return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
+----------------------------------------------------------------
+--- AI Management: Get Closest Player Owned Chunk
+--- Used to determine the next chunk a unit should attack.
+--- @param my_current_chunk Chunk
+--- @return Chunk
+----------------------------------------------------------------
 local function get_closest_player_owned_chunk(my_current_chunk)
   local player_owned_chunk = nil
   local distance = 999999999
@@ -22,10 +38,19 @@ local function get_closest_player_owned_chunk(my_current_chunk)
 
 end
 
+
+----------------------------------------------------------------
+--- AI Management: Spawning + Chunk Conquer Commands
+--- @param dt number
+----------------------------------------------------------------
 function ai_management(dt)
 
   for _, army in ipairs(Battle.current.armies) do
     local bf = army.owner
+
+    -- todo we should get those from the difficulty settings
+    local NEXT_CHUNK_CONQUER_COMMANDS_COOLDOWN = 5
+    local NEXT_SPAWN_COOLDOWN = 20
 
     if not bf.is_player then
 
@@ -43,7 +68,8 @@ function ai_management(dt)
       do
 
         local function spawn_squad(_army, squad)
-          -- todo: type check
+          Army.assert(_army)
+          -- todo: type check for squad
           local costs = squad.costs
           local faction_has_enough_command_points = _army.command_points >= costs
           if faction_has_enough_command_points then
@@ -58,7 +84,7 @@ function ai_management(dt)
           local squad = GermanEmpire.inf_squads[1]
           spawn_squad(army, squad)
           bf.time_til_next_spawn = squad.time_til_deployment
-          cooldowns[bf].spawn = squad.time_til_deployment + 20
+          cooldowns[bf].spawn = squad.time_til_deployment + NEXT_SPAWN_COOLDOWN
         end
 
       end -- Spawn-Management
@@ -69,8 +95,8 @@ function ai_management(dt)
 
         if cooldowns[bf].chunk_conquer_commands <= 0 then
 
-          -- todo: describe what this does
-
+          -- we just set the next chunk to conquer for all units of the ai
+          -- so ai units will try to go to the enemy chunk that is closest to them
           for _, unit in ipairs(Unit.instances) do
             if unit.owner == bf then
               local my_current_chunk = Chunk.get(unit.x, unit.y)
@@ -80,6 +106,8 @@ function ai_management(dt)
               end
             end
           end
+
+          cooldowns[bf].chunk_conquer_commands = NEXT_CHUNK_CONQUER_COMMANDS_COOLDOWN
 
         end
 

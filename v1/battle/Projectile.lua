@@ -50,6 +50,8 @@ end
 -----------------------------------------------------------------------
 function Projectile.draw_all()
 
+  -- todo: dont draw the projectiles that are outside the screen
+
   for _, projectile in ipairs(Projectile.instances) do
     love.graphics.setColor(1, 1, 1)
     love.graphics.circle("fill", projectile.x, projectile.y, 3)
@@ -95,7 +97,6 @@ function Projectile.update_all(dt)
 
         -- apply unit hit
         do
-          print("HIT")
 
           -- todo: maybe create explosion
 

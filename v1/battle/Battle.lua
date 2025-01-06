@@ -1,4 +1,7 @@
 ----------------------------------------
+--- Main class for the battle.
+--- Each rts battle creates a new instance of this class.
+--- This instance is then saved in Battle.current.
 --- @class Battle
 --- @field ui UiState
 --- @field armies Army[]
@@ -25,9 +28,10 @@ Battle.WORLD_SIZE_IN_CHUNKS = Battle.WORLD_SIZE_IN_SECTORS * Battle.SECTOR_SIZE_
 --- @param armies Army[]
 --- @return Battle
 ----------------------------------------
-function Battle.new(
-  armies
-)
+function Battle.new(armies)
+
+  for _, army in ipairs(armies) do Army.assert(army) end
+
   -- reset the global battle state
   do
     Projectile.instances = {}
@@ -37,8 +41,7 @@ function Battle.new(
     Chunk.instances = {}
     Tile.instances = {}
     Battle.current = nil
-
-    -- todo: maybe here is a good place to collect garbage
+    collectgarbage()
   end
 
   -- if this is true all units flee and the faction is defeated
@@ -86,6 +89,8 @@ end
 --- @param dt number
 ----------------------------------------
 function Battle:update(dt)
+
+  Battle.assert(self)
 
   local isMiddleMousePressed = love.mouse.isDown(3) -- Middle mouse button
   local mouseX, mouseY = love.mouse.getPosition()

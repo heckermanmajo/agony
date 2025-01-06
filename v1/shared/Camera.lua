@@ -1,4 +1,4 @@
---- Camera 2D implementation for LÖVE
+--- Camera 2D implementation for LÖVE; used in battle AND camp.
 --- @class Camera
 --- @field x number Camera's x-coordinate
 --- @field y number Camera's y-coordinate

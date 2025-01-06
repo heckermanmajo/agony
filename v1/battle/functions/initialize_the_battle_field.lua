@@ -40,7 +40,6 @@ function initialize_the_battle_field()
 
   end -- end initialize the sectors, chunks, tiles
 
-
   -- make the bottom chunks be owned by the player
   -- make the top chunks be owned by the enemy
 
@@ -60,9 +59,6 @@ function initialize_the_battle_field()
     end
   end
 
-
-
   -- todo: create objects on the map
-
 
 end -- end initialize_the_battle_field

@@ -10,7 +10,12 @@ Army = {
 }
 Army.__index = Army
 
+--- @param command_points number
+--- @param ct CampTile
+--- @return Army
 function Army.new(command_points, ct)
+  assert(type(command_points) == "number")
+  CampTile.assert(ct)
   local self = setmetatable({}, Army)
   self.command_points = command_points
   self.campaign_tile = ct
@@ -23,6 +28,7 @@ function Army.new(command_points, ct)
 end
 
 function Army:draw()
+  Army.assert(self)
   local tile = self.campaign_tile
   -- draw the command_points and in faction color
   local owner_of_tile = tile.owner
