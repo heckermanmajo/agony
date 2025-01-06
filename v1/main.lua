@@ -44,7 +44,6 @@ require "camp/CampTile"
 require "camp/FactionState"
 
 require "camp/functions/next_round_progression"
-require "camp/functions/handle_ai_movements"
 require "camp/functions/camp_draw"
 
 require "data/type_hints" -- also contains check functions that are used for checking

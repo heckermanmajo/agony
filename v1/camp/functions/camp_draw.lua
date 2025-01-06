@@ -63,27 +63,31 @@ function Camp:draw()
 
   -- draw the ui
 
-  if self.currently_selected_tile then
-    local x = love.graphics.getWidth() - 360
-    self.currently_selected_tile:render_and_handle_ui(x)
-  end
+  if not self.working_on_ai_moves then
 
-  -- draw header bar
-  love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
-  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth() - 360, 50)
-
-  -- start with the next round button
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print("Next Round", 10, 10)
-  -- draw a red rectangle around the next round button if the mouse is over it
-  if Utils.mouse_is_over(10, 10, 100, 30) then
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", 10, 10, 100, 30)
-    if love.mouse.isDown(1) and Camp.button_cooldown < 0 and not Camp.mouse_click_consumed_this_frame then
-      Camp.mouse_click_consumed_this_frame = true
-      Camp.button_cooldown = 0.5
-      next_round_progression()
+    if self.currently_selected_tile then
+      local x = love.graphics.getWidth() - 360
+      self.currently_selected_tile:render_and_handle_ui(x)
     end
+
+    -- draw header bar
+    love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth() - 360, 50)
+
+    -- start with the next round button
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Next Round", 10, 10)
+    -- draw a red rectangle around the next round button if the mouse is over it
+    if Utils.mouse_is_over(10, 10, 100, 30) then
+      love.graphics.setColor(1, 0, 0)
+      love.graphics.rectangle("line", 10, 10, 100, 30)
+      if love.mouse.isDown(1) and Camp.button_cooldown < 0 and not Camp.mouse_click_consumed_this_frame then
+        Camp.mouse_click_consumed_this_frame = true
+        Camp.button_cooldown = 0.5
+        next_round_progression()
+      end
+    end
+
   end
 
   -- todo: next round on enter ...

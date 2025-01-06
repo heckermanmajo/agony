@@ -3,8 +3,11 @@
 --- @field cam Camera
 --- @field mouse_click_consumed_this_frame boolean
 --- @field currently_selected_tile CampTile
---- @field ai_army_movement_queue table<{from:CampTile, to:CampTile}>
-----------------------------------------
+--- @field ai_army_movement_queue table<{from:CampTile, to:CampTile, from_army: Army, to_army: Army|nil}> the armies needed to be added, so we can identify an invalid move
+--- since all ais create their movements at once: so ai movement can invalidate other later planned ai movements
+--- @field working_on_ai_moves boolean if this is true, we are currently processing ai movements and disable the
+--- player from moving his armies and interacting with ui
+-------------------------------------------
 Camp = {
   --- @type Camp
   current = nil,
@@ -29,6 +32,7 @@ function Camp.new()
   self.cam = Camera.new(0, 0, 1, 0)
   self.currently_selected_tile = nil
   self.ai_army_movement_queue = {}
+  self.working_on_ai_moves = false
 
   -- load the campaign png that contains the map structure
 
@@ -82,6 +86,7 @@ function Camp.new()
 
 end -- end of function Camp.new()
 
+local next_ai_movement_cooldown = 0
 
 ----------------------------------------
 --region Camp:update()
@@ -90,10 +95,45 @@ end -- end of function Camp.new()
 function Camp:update(dt)
   Camp.button_cooldown = Camp.button_cooldown - dt
   Camp.key_cooldown = Camp.key_cooldown - dt
+  next_ai_movement_cooldown = next_ai_movement_cooldown - dt
 
   CampTile.update_cool_down(dt)
 
-  handle_ai_movements(dt)
+  self.working_on_ai_moves = false
+
+  -- handle working on ai moves
+  do
+    if #self.ai_army_movement_queue > 0 then
+
+      self.working_on_ai_moves = true
+
+      if next_ai_movement_cooldown < 0 then
+
+        local movement = self.ai_army_movement_queue[1]
+        table.remove(self.ai_army_movement_queue, 1)
+
+        Army.assert(movement.from_army)
+        CampTile.assert(movement.from)
+        CampTile.assert(movement.to)
+        -- the army where we move to can be nil
+        if movement.to_army then Army.assert(movement.to_army) end
+
+        local still_valid =
+          movement.from.army == movement.from_army and
+          movement.to.army == movement.to_army
+
+        if still_valid then
+          movement.from_army:move(movement.to)
+          next_ai_movement_cooldown = 1
+        else
+          --ignore the movement since the assumed state has changed
+        end
+
+      end
+
+    end
+
+  end
 
   -- handle camera movement
   do
@@ -111,7 +151,7 @@ function Camp:update(dt)
   end
 
   -- use the arrow keys to move the army
-  if self.currently_selected_tile then
+  if self.currently_selected_tile and not self.working_on_ai_moves then
 
     if self.currently_selected_tile.army then
 

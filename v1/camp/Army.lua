@@ -54,7 +54,26 @@ end
 function Army:move(direction)
   Army.assert(self)
 
-  assert(direction == "up" or direction == "down" or direction == "left" or direction == "right")
+  if type(direction) == "string" then
+    assert(direction == "up" or direction == "down" or direction == "left" or direction == "right")
+  else
+    assert(CampTile.is(direction))
+    local neighbours = self.campaign_tile:get_neighbours()
+    local found = false
+    for _, n in ipairs(neighbours) do
+      if n == direction then
+        found = true
+        break
+      end
+    end
+    assert(found, "The direction is not a neighbour of the current tile")
+    -- find the direction
+    if direction.y < self.campaign_tile.y then direction = "up"
+    elseif direction.y > self.campaign_tile.y then direction = "down"
+    elseif direction.x < self.campaign_tile.x then direction = "left"
+    elseif direction.x > self.campaign_tile.x then direction = "right"
+    end
+  end
 
   local target = nil
   do
@@ -152,6 +171,7 @@ function Army:move(direction)
     self.campaign_tile.army = nil
     target.army = self
     self.campaign_tile = target
+    target.owner = self.owner
   end
 
   self.moved_this_turn = true
