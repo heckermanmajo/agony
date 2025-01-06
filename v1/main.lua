@@ -1,3 +1,19 @@
+--[[
+
+TODO: code base quality after the prototype game play loop is implemented
+- [ ] we need to log stuff into a log files folder with the timestamp
+- [ ] then we need info, warn and err functions that write into those files
+- [ ] we need debug view modes on the f-keys
+   - [ ] display the numbers of all instance-arrays
+   - [ ] display the state of each unit in detail we select, etc.
+- [ ] Add rigoros type checking to all (ALL!) functions
+   - [ ] specifically the data like factions, squads and units
+- [ ] Add sanity and not null checks for units, tiles, chunks, etc.
+- [ ] Add comments to all functions and controllers
+- [ ] Structure the code with "do end" blocks
+- [ ] Run with some performance-checking to identify bottlenecks and comment them
+]]
+
 --- @type boolean Allows to enable or disable debug mode; state checks, type checks, etc.
 DEBUG = true
 
@@ -43,24 +59,25 @@ require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
 require "data/factions/german_empire/GermanEmpire"
 
-
 Camp.new()
 -- temporary test battle
 Battle.new({
-  Army.new(100, CampTile.new(-1,-1,"water",FactionState.instances[1])),
-  Army.new(100, CampTile.new(-1,-2,"water",FactionState.instances[2]))
+  Army.new(100, CampTile.new(-1, -1, "water", FactionState.instances[1])),
+  Army.new(100, CampTile.new(-1, -2, "water", FactionState.instances[2]))
 })
 
 MODE = "camp"
 
-function love.keypressed(key)
-  if key == "tab" then
-    if MODE == "camp" then
-      MODE = "battle"
-    else
-      MODE = "camp"
-    end
+function TOGGLE_GAME_MODE()
+  if MODE == "camp" then
+    MODE = "battle"
+  else
+    MODE = "camp"
   end
+end
+
+function love.keypressed(key)
+  if key == "tab" then TOGGLE_GAME_MODE() end
 end
 
 function love.update(dt)

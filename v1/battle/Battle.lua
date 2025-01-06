@@ -20,7 +20,8 @@ Battle.WORLD_SIZE_IN_SECTORS = 2
 Battle.WORLD_SIZE_IN_CHUNKS = Battle.WORLD_SIZE_IN_SECTORS * Battle.SECTOR_SIZE_IN_CHUNKS
 
 ----------------------------------------
---- Create a new battle.
+--- Create a new battle. This function is called if on the campaign map
+--- two armies meet and a battle is started.
 --- @param armies Army[]
 --- @return Battle
 ----------------------------------------
@@ -36,6 +37,8 @@ function Battle.new(
     Chunk.instances = {}
     Tile.instances = {}
     Battle.current = nil
+
+    -- todo: maybe here is a good place to collect garbage
   end
 
   -- if this is true all units flee and the faction is defeated
@@ -65,6 +68,17 @@ function Battle.new(
   initialize_the_battle_field()
 
   return self
+end
+
+
+function Battle:get_non_player_armies()
+  local non_player_armies = {}
+  for _, army in ipairs(self.armies) do
+    if not army.owner.is_player then
+      table.insert(non_player_armies, army)
+    end
+  end
+  return non_player_armies
 end
 
 ----------------------------------------
@@ -111,9 +125,16 @@ function Battle:draw()
   self.ui:display_and_handle_select_squad_mode()
 
   -- draw the current players army command points
-  local command_points = FactionState.get_current_player_faction().money
+  local command_points = Battle.current.player_army.command_points
   love.graphics.setColor(1, 1, 1)
   love.graphics.print("Command Points: " .. command_points, 10, 10)
+
+  local non_player_armies = self:get_non_player_armies()
+  for i, army in ipairs(non_player_armies) do
+    local color = army.owner.faction.color
+    love.graphics.setColor(color)
+    love.graphics.print("Command Points: " .. army.command_points, 10, 10 + i * 20)
+  end
 
   love.graphics.setColor(1, 1, 1)
 end

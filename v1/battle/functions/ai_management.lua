@@ -1,8 +1,7 @@
 local cooldowns = {}
 
-
 local function get_distance(x1, y1, x2, y2)
-  return math.sqrt((x1-x2)^2 + (y1-y2)^2)
+  return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
 local function get_closest_player_owned_chunk(my_current_chunk)
@@ -22,8 +21,6 @@ local function get_closest_player_owned_chunk(my_current_chunk)
   return player_owned_chunk
 
 end
-
-
 
 function ai_management(dt)
 
@@ -45,10 +42,21 @@ function ai_management(dt)
       -- Spawn-Management: add units to spawn queue
       do
 
+        local function spawn_squad(_army, squad)
+          -- todo: type check
+          local costs = squad.costs
+          local faction_has_enough_command_points = _army.command_points >= costs
+          if faction_has_enough_command_points then
+            _army.command_points = _army.command_points - costs
+            table.insert(_army.owner.spawn_queue, squad)
+            return true
+          end
+          return false
+        end
+
         if cooldowns[bf].spawn <= 0 then
-          -- todo: apply the costs
           local squad = GermanEmpire.inf_squads[1]
-          table.insert(bf.spawn_queue, squad)
+          spawn_squad(army, squad)
           bf.time_til_next_spawn = squad.time_til_deployment
           cooldowns[bf].spawn = squad.time_til_deployment + 20
         end
@@ -61,10 +69,7 @@ function ai_management(dt)
 
         if cooldowns[bf].chunk_conquer_commands <= 0 then
 
-          -- todo loop over all units and check what chunk to conquer
-          -- todo: choose the next unconquered chunk
-          -- todo: prefer the player owner chunks
-          -- todo: if no player owned chunk is there, choose the closest to a player owned chunk
+          -- todo: describe what this does
 
           for _, unit in ipairs(Unit.instances) do
             if unit.owner == bf then

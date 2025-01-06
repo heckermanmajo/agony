@@ -29,20 +29,32 @@ function end_battle_condition_check(dt)
       end
     end
 
-    local defeated_factions = 0
+    local defeated_factions_number = 0
+    local defeated_factions = {}
     for faction, count in pairs(chunks_on_faction) do
       local percentage = count / #Chunk.instances
       if percentage < 0.1 then
         print("Faction " .. faction.faction.name .. " was defeated.")
         faction.defeated_in_this_current_battle = true
-        defeated_factions = defeated_factions + 1
+        defeated_factions_number = defeated_factions_number + 1
+        defeated_factions[faction] = true
       end
     end
 
     -- check here if all factions are defeated except one
-    if defeated_factions >= #FactionState.instances - 1 then
+    local factions_in_battle = #Battle.current.armies
+    if defeated_factions_number >= factions_in_battle - 1 then
       print("All factions except one were defeated.")
-      -- todo: end the battle here ...
+      -- set the command points of all defeated factions to 0
+      for _, army in ipairs(Battle.current.armies) do
+        if defeated_factions[army.owner] then
+          army.command_points = 0
+          army:delete_me_from_campaign()
+        end
+      end
+
+      TOGGLE_GAME_MODE() -- back to campaign mode
+
     end
 
     cooldown = 1

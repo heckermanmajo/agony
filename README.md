@@ -1,6 +1,8 @@
 # agony
 A game that need to be, but does not want to.
 
+## CodeBase QUality
+
 ## Strategy: Content + Gameplay
 Spiele die guten Content ermöglichen, aber dadurch zum selbst-spielen
 anregen.

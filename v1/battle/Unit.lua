@@ -108,7 +108,7 @@ end -- draw
 function Unit:look_for_target(dt)
 
   if self.chunk_i_am_on == nil then
-    print("Unit is not on a chunk. This should not happen.")
+    print("Unit is not on a chunk. This should not happen: " .. self.x .. " " .. self.y .. " HP: " .. self.hp)
     return
   end
 

@@ -4,6 +4,7 @@
 --- @field moved_this_turn boolean
 --- @field owner FactionState
 --- @field spawn_queue table<SquadTemplate> used in the battle to spawn units
+--- @field _dead_ boolean if this is true, the army is not in the campaign anymore; used for debug state checks
 Army = {
   instances = {},
 }
@@ -16,6 +17,7 @@ function Army.new(command_points, ct)
   self.spawn_queue = {}
   self.owner = ct.owner
   self.moved_this_turn = false
+  self._dead_ = false
   table.insert(Army.instances, self)
   return self
 end
@@ -156,8 +158,20 @@ function Army:move(direction)
 
 end -- of move
 
--- todo: army movement
--- todo: get user input for army movement
+
+function Army:delete_me_from_campaign()
+  Army.assert(self)
+  self.campaign_tile.army = nil
+  self.campaign_tile = nil
+  self.owner = nil
+  self._dead_ = true
+  for i, a in ipairs(Army.instances) do
+    if a == self then
+      table.remove(Army.instances, i)
+      break
+    end
+  end
+end
 
 function Army.is(x) return getmetatable(x) == Army end
 function Army.assert(x) assert(Army.is(x), "Expected Army. Got " .. type(x)) end
