@@ -66,8 +66,7 @@ function Battle.new(armies)
   assert(self.player_army, "No player army found in the list of armies")
 
   Battle.current = self
-
-  load_all_resources()
+  
   initialize_the_battle_field()
 
   return self

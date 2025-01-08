@@ -269,6 +269,12 @@ function Unit:delete_after_death(reason_of_death)
 
     elseif reason_of_death == "rifle" then
 
+      local radius = 15
+      PassiveObject.new('blood', self.x+ math.random(-radius, radius), self.y+ math.random(-radius, radius))
+      PassiveObject.new('blood', self.x+ math.random(-radius, radius), self.y+ math.random(-radius, radius))
+      PassiveObject.new('blood', self.x+ math.random(-radius, radius), self.y+ math.random(-radius, radius))
+      PassiveObject.new('blood', self.x+ math.random(-radius, radius), self.y+ math.random(-radius, radius))
+
     elseif reason_of_death == "fire" then
 
     end

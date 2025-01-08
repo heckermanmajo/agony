@@ -21,6 +21,7 @@ end
 --- @return Chunk
 ----------------------------------------------------------------
 local function get_closest_player_owned_chunk(my_current_chunk)
+  if my_current_chunk == nil then return nil end
   local player_owned_chunk = nil
   local distance = 999999999
 

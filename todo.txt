@@ -1,0 +1,5 @@
+ - add blood and gore (passive objects)
+ - add granates and explosions
+    - add a grenade launcher soldier
+ - add different looking units for the different factions
+ - add tanks (they shoot granate-logic-using bullets)

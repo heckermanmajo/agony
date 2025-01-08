@@ -1,0 +1,8 @@
+
+
+- momentan ist die Camp-map front zu groß nach russland hin.
+- man darf nicht im selben zug verstärken und angreifen.
+- Ich brauche irgendwas, was die verteidigung verbessert:
+  - zum beispiel MG-stellungen/stellungen allgemein
+- Ich brauche Explosionen
+- ich brauche Panzer (bewegende turrets sind noch nicht nötig)

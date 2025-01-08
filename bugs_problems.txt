@@ -1,0 +1,9 @@
+
+
+
+BUG: Battle endet nicht korrekt, wenn man alles erobert UND keine gegnerischen einheiten mehr auf dem
+Spielfeld sind. Als würde die Map control kalkulation nicht korrekt funktionieren.
+-> irgendwas mit null? z.b. durch null teilen?
+
+BUG: ich hatte eine Armee mit 0 command points nach einer schlacht auf der campaign map.
+Diese armee hätte aufgelöst werden sollen. Ist das ein "< oder <=" Fehler?

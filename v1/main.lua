@@ -57,6 +57,8 @@ require "data/factions/german_empire/GermanEmpire_Squad1_LightInfantry"
 require "data/factions/german_empire/GermanEmpire_Squad2_MotorizedInfantry"
 require "data/factions/german_empire/GermanEmpire"
 
+load_all_resources()
+
 Camp.new()
 -- temporary test battle
 Battle.new({

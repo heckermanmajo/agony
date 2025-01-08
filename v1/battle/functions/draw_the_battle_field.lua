@@ -1,4 +1,3 @@
-
 --------------------------------------------------------------------------------
 --- Draw the battle field.
 --------------------------------------------------------------------------------
@@ -100,6 +99,9 @@ function draw_the_battle_field()
 
   end -- end sector-loop
 
+  --- draw passive objects
+  for _, po in ipairs(PassiveObject.instances) do po:draw() end
+
   --
   --
   --
@@ -172,6 +174,7 @@ function draw_the_battle_field()
   --
 
   Projectile.draw_all()
+
 
   --
   --
