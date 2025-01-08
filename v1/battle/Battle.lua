@@ -83,6 +83,17 @@ function Battle:get_non_player_armies()
   return non_player_armies
 end
 
+function handle_units(dt)
+  for _, u in ipairs(Unit.instances) do
+    u:update_my_chunk(dt)
+    u:think(dt)
+  end
+end
+
+function update_owner_of_chunk(dt)
+    for _, c in ipairs(Chunk.instances) do c:update_owner_of_chunk() end
+end
+
 ----------------------------------------
 --- Update the battle.
 --- @param dt number
@@ -108,14 +119,11 @@ function Battle:update(dt)
   spawn_management(dt)
   ai_management(dt)
   end_battle_condition_check(dt)
+  handle_units(dt)
 
-  for _, u in ipairs(Unit.instances) do
-    u:update_my_chunk()
-    u:think(dt)
-  end
 
   if DEBUG then for _, c in ipairs(Chunk.instances) do c:check_chunk_state() end end
-  for _, c in ipairs(Chunk.instances) do c:update_owner_of_chunk() end
+  update_owner_of_chunk(dt)
 
 end
 

@@ -11,7 +11,7 @@ Next-tasks:
 --- @type boolean Allows to enable or disable debug mode; state checks, type checks, etc.
 DEBUG = true
 --- @type boolean Allows to enable or disable profiling; this will generate a report every 100 frames
-PROFILING = false
+PROFILING = true
 
 require "shared/Utils"
 require "shared/Atlas"
@@ -148,3 +148,4 @@ function love.wheelmoved(x, y)
     end
   end
 end
+

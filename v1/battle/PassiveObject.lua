@@ -7,7 +7,7 @@ PassiveObject.__index = PassiveObject
 --- Called for example when a unit dies or an explosion happens.
 --- @param object_type string
 --- @return PassiveObject
-function PassiveObject.new(object_type,x,y)
+function PassiveObject.new(object_type, x, y)
 
   local self = {}
   setmetatable(self, PassiveObject)
@@ -15,48 +15,51 @@ function PassiveObject.new(object_type,x,y)
   self.x = x
   self.y = y
 
-  if object_type == "bone" then
-    local rand = math.random(1, 4)
-    local sprite = "bone_" .. rand
-    self.sprite = sprite
-    self.atlas = "blood_and_gore"
-  end
-
-  if object_type == "blood" then
-    local rand = math.random(1, 4)
-    local sprite = "blood_" .. rand
-    self.sprite = sprite
-    self.atlas = "blood_and_gore"
-  end
-
-  if object_type == "gore" then
-    local rand = math.random(1, 4)
-    local sprite = "gore_" .. rand
-    self.sprite = sprite
-    self.atlas = "blood_and_gore"
-  end
-
-  if object_type == "burnt_remains" then
-    local rand = math.random(1, 4)
-    local sprite = "burnt_remains_" .. rand
-    self.sprite = sprite
-    self.atlas = "blood_and_gore"
-  end
-
-  if self.atlas == "blood_and_gore" then
+  if (
+    object_type == "bone" or
+    object_type == "blood" or
+    object_type == "gore" or
+    object_type == "burnt_remains"
+  ) then
     self.w = 16
     self.h = 16
     local BASE_TIMER = 10
     self.timer_til_removal = BASE_TIMER + math.random(-BASE_TIMER * 0.2, BASE_TIMER * 0.2)
     self.rotation = math.random(0, 360)
+    self.on_ground = true
+    self.atlas = "blood_and_gore"
+    self.sprite = object_type .. "_" .. math.random(1, 4)
   end
 
   if object_type == "explosion" then
-
+    self.on_ground = false -- an explosion should hide the stuff beneath
+    self.atlas = "explosion_and_fire"
+    -- todo: implement the explosion
   end
 
   if object_type == "smoke" then
+    self.on_ground = false -- smoke should hide stuff beneath
+    self.atlas = "smoke"
+    -- todo: implement the smoke
+  end
 
+  if object_type == "fire" then
+    self.on_ground = false -- fire should hide stuff beneath
+    -- todo: implement the fire
+    -- todo: fire needs animations
+    -- we can use the dynamic nature of lue to fix the need for animations in this fire case ...
+  end
+
+  if object_type == "debris" then
+    self.on_ground = true
+    self.atlas = "debris"
+    -- todo: implement the debris
+  end
+
+  if object_type == "crater" then
+    self.on_ground = true
+    self.atlas = "crater"
+    -- todo: implement the crater
   end
 
   assert(self.atlas, "Bad input to PassiveObject.new: " .. object_type)

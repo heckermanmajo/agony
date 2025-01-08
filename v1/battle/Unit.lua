@@ -53,9 +53,10 @@ function Unit.new(x, y, unit_class, owner)
   self.passengers = {} -- some units can carry other units: lkw, tanks, etc.
   self.time_til_next_look_for_target = math.random(0, 3)
   self.chunk_conquer_target = nil -- see battle/functions/ai_management.lua
+  self.__next_chunk_update_in = 0
 
   -- todo: if this unitclass has other units as turrets: create those turrets here
-  self:update_my_chunk()
+  self:update_my_chunk(nil)
 
   table.insert(Unit.instances, self)
   return self
@@ -220,9 +221,21 @@ end
 --- Update the chunk the unit is registered on.
 --- This is used to keep track of the units on the map.
 -----------------------------------------------------------------------
-function Unit:update_my_chunk()
+function Unit:update_my_chunk(dt)
 
   Unit.assert(self)
+
+  -- small performance optimization since we dont need to update this all the time
+  if dt ~= nil then
+    self.__next_chunk_update_in = self.__next_chunk_update_in - dt
+
+    if self.__next_chunk_update_in > 0 then
+      return
+    end
+
+    self.__next_chunk_update_in = math.random(0.5, 5)
+  end
+
 
   if self:is_out_of_world() then return end
 

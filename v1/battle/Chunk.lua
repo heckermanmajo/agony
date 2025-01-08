@@ -91,16 +91,18 @@ end
 ----------------------------------------
 function Chunk:check_chunk_state()
   Chunk.assert(self)
-  for _, u in ipairs(self.units) do
-    if not u:is_out_of_world() then
-      if u.x < self.x * Battle.CHUNK_SIZE_IN_PIXELS or u.x >= (self.x + 1) * Battle.CHUNK_SIZE_IN_PIXELS then
-        error("Unit is not on the correct chunk: " .. u.x .. " not in " .. self.x * Battle.CHUNK_SIZE_IN_PIXELS .. " - " .. (self.x + 1) * Battle.CHUNK_SIZE_IN_PIXELS)
-      end
-      if u.y < self.y * Battle.CHUNK_SIZE_IN_PIXELS or u.y >= (self.y + 1) * Battle.CHUNK_SIZE_IN_PIXELS then
-        error("Unit is not on the correct chunk: " .. u.y .. " not in " .. self.y * Battle.CHUNK_SIZE_IN_PIXELS .. " - " .. (self.y + 1) * Battle.CHUNK_SIZE_IN_PIXELS)
-      end
-    end
-  end
+  return;
+  -- todo: we accept a small lag here for performance reasons
+  --for _, u in ipairs(self.units) do
+  --  if not u:is_out_of_world() then
+  --    if u.x < self.x * Battle.CHUNK_SIZE_IN_PIXELS or u.x >= (self.x + 1) * Battle.CHUNK_SIZE_IN_PIXELS then
+  --      error("Unit is not on the correct chunk: " .. u.x .. " not in " .. self.x * Battle.CHUNK_SIZE_IN_PIXELS .. " - " .. (self.x + 1) * Battle.CHUNK_SIZE_IN_PIXELS)
+  --    end
+  --    if u.y < self.y * Battle.CHUNK_SIZE_IN_PIXELS or u.y >= (self.y + 1) * Battle.CHUNK_SIZE_IN_PIXELS then
+  --      error("Unit is not on the correct chunk: " .. u.y .. " not in " .. self.y * Battle.CHUNK_SIZE_IN_PIXELS .. " - " .. (self.y + 1) * Battle.CHUNK_SIZE_IN_PIXELS)
+  --    end
+  --  end
+  --end
 end
 
 ----------------------------------------
