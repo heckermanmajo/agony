@@ -1,0 +1,5 @@
+
+
+- create a tank as a big default unit (no turrets yet)
+- make the tank shoot explosive projectiles
+- make soldier projectiles explode to test explosions

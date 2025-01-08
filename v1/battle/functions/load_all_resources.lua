@@ -55,4 +55,11 @@ function load_all_resources()
     atlas:add_quad("burnt_remains_8", 16*7, 16*3, 16, 16)
   end
 
+  -- fire and smoke
+  do
+    local atlas = Atlas.new("fire_and_smoke", "assets/FireAndSmoke.png")
+    atlas:add_quad("smoke_1", 32*0, 32*0, 32, 32)
+    atlas:add_quad("fire_1", 32*0, 32*1, 32, 32)
+  end
+
 end
