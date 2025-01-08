@@ -51,6 +51,14 @@ function PassiveObject.new(object_type,x,y)
     self.rotation = math.random(0, 360)
   end
 
+  if object_type == "explosion" then
+
+  end
+
+  if object_type == "smoke" then
+
+  end
+
   assert(self.atlas, "Bad input to PassiveObject.new: " .. object_type)
   assert(self.timer_til_removal, "Bad input to PassiveObject.new: " .. object_type)
   assert(self.sprite, "Bad input to PassiveObject.new: " .. object_type)

@@ -1,13 +1,10 @@
 --[[
 
-TODO: code base quality after the prototype game play loop is implemented
-- [ ] Run with some performance-checking to identify bottlenecks and comment them
-
 Next-tasks:
-- [ ] display a window before a battle who is attacking and who is defending
-- [ ] display a window after a battle who won and who lost
+
 - [ ] display dead bodies on the battle field
 - [ ] make the range circle optional
+
 
 ]]
 

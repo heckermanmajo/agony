@@ -1,0 +1,2 @@
+- turrets are units
+- this way they can independently move around and fire

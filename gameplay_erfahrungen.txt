@@ -6,3 +6,6 @@
   - zum beispiel MG-stellungen/stellungen allgemein
 - Ich brauche Explosionen
 - ich brauche Panzer (bewegende turrets sind noch nicht nötig)
+- man weiß nicht wo man angegriffen wird:
+    - display a window before a battle who is attacking and who is defending
+    - display a window after a battle who won and who lost

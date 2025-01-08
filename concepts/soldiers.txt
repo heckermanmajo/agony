@@ -1,0 +1,13 @@
+Die Farben der Soldaten weisen den typ des soldaten aus.
+
+-> MP: weiß
+-> Schutze: rot
+-> MG: türkis
+-> Anti Tank + besatzung: gelb
+-> sturmgewehr: blau
+-> scharfschütze: grün
+
+Dann bekommt jede Fraktion einen eigene stil.
+-> Damit sind Fraktionen dann was besonderes.
+
+Später gibet es noch Flammenwerfer & Granatwerfer.

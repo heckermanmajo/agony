@@ -1,0 +1,5 @@
+- defenses and structures are units
+- they are deployed by a player via trucks
+- or they can be conquered by a player if they are neutral
+- they are immobile transporters, which place their passangers
+  on a certain fixed spot but allow them to fire
