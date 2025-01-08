@@ -130,15 +130,18 @@ function Battle:draw()
   self.ui:display_and_handle_select_squad_mode()
 
   -- draw the current players army command points
-  local command_points = Battle.current.player_army.command_points
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print("Command Points: " .. command_points, 10, 10)
+  if not PROFILING then -- collides with the profiling text
+    local command_points = Battle.current.player_army.command_points
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Command Points: " .. command_points, 10, 10)
 
-  local non_player_armies = self:get_non_player_armies()
-  for i, army in ipairs(non_player_armies) do
-    local color = army.owner.faction.color
-    love.graphics.setColor(color)
-    love.graphics.print("Command Points: " .. army.command_points, 10, 10 + i * 20)
+    local non_player_armies = self:get_non_player_armies()
+    for i, army in ipairs(non_player_armies) do
+      local color = army.owner.faction.color
+      love.graphics.setColor(color)
+      love.graphics.print("Command Points: " .. army.command_points, 10, 10 + i * 20)
+      love.graphics.setColor(1, 1, 1)
+    end
   end
 
   love.graphics.setColor(1, 1, 1)

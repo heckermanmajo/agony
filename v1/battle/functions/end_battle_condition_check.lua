@@ -10,26 +10,6 @@ function end_battle_condition_check(dt)
 
   if cooldown <= 0 then
 
-    -- special check if no units are left and no command points are left
-    if #Unit.instances == 0 then
-      local there_are_command_points_left = false
-      for _, army in ipairs(Battle.current.armies) do
-        if army.command_points > 0 then
-          there_are_command_points_left = true
-          break
-        end
-      end
-      if not there_are_command_points_left then
-        print("INFO: All units are dead and no command points left.")
-        for _, army in ipairs(Battle.current.armies) do
-          if defeated_factions[army.owner] then
-            army.command_points = 0
-            army:delete_me_from_campaign()
-          end
-        end
-        TOGGLE_GAME_MODE() -- back to campaign mode
-      end
-    end
 
     -- map all chunks on factions, so we know how many chunks each faction has
     local chunks_on_faction = {}
@@ -71,6 +51,27 @@ function end_battle_condition_check(dt)
 
       TOGGLE_GAME_MODE() -- back to campaign mode
 
+    end
+
+        -- special check if no units are left and no command points are left
+    if #Unit.instances == 0 then
+      local there_are_command_points_left = false
+      for _, army in ipairs(Battle.current.armies) do
+        if army.command_points > 0 then
+          there_are_command_points_left = true
+          break
+        end
+      end
+      if not there_are_command_points_left then
+        print("INFO: All units are dead and no command points left.")
+        for _, army in ipairs(Battle.current.armies) do
+          if defeated_factions[army.owner] then
+            army.command_points = 0
+            army:delete_me_from_campaign()
+          end
+        end
+        TOGGLE_GAME_MODE() -- back to campaign mode
+      end
     end
 
     cooldown = math.random(4, 8)

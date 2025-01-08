@@ -92,9 +92,9 @@ function Unit:draw()
   )
 
   -- draw a purple circle around the unit with the radius of the weapon range
-  local weapon_range = self.cls.weapon_range
-  love.graphics.setColor(self.owner.faction.color)
-  love.graphics.circle("line", self.x, self.y, weapon_range)
+  --local weapon_range = self.cls.weapon_range
+  --love.graphics.setColor(self.owner.faction.color)
+  --love.graphics.circle("line", self.x, self.y, weapon_range)
 
 end -- draw
 
@@ -126,7 +126,7 @@ function Unit:look_for_target(dt)
       end
     end
 
-    self.time_til_next_look_for_target = math.random(0, 0.2)
+    self.time_til_next_look_for_target = math.random(0, 2)
 
   end
 end -- look_for_target
@@ -323,21 +323,28 @@ end -- delete_after_death
 function Unit.update_all(dt)
 
   for _, unit in ipairs(Unit.instances) do
+    --if unit.__collision_timer == nil then
+    --  unit.__collision_timer = 0
+    --end
+    --unit.__collision_timer = unit.__collision_timer - dt
     unit:look_for_target(dt)
     unit:move(dt)
     unit:fight(dt)
-    -- todo: this collision sucks ass
     -- check collision with other units
-    for _, other_unit in ipairs(Unit.instances) do
-      if other_unit ~= unit then
-        local distance = math.sqrt((unit.x - other_unit.x) ^ 2 + (unit.y - other_unit.y) ^ 2)
-        if distance < 10 then
-          -- push the other unit away
-          local angle = math.atan2(other_unit.y - unit.y, other_unit.x - unit.x)
-          other_unit.x = other_unit.x + math.cos(angle) * 100 * dt
-        end
-      end
-    end
+    --if unit.chunk_i_am_on ~= nil and unit.__collision_timer < 0 then
+    --  for _, other_unit in ipairs(unit.chunk_i_am_on.units) do
+    --    if other_unit ~= unit then
+    --     local distance = math.sqrt((unit.x - other_unit.x) ^ 2 + (unit.y - other_unit.y) ^ 2)
+    --      if distance < 10 then
+    --        -- push the other unit away
+    --        local angle = math.atan2(other_unit.y - unit.y, other_unit.x - unit.x)
+    --        other_unit.x = other_unit.x + math.cos(angle) * 20
+    --      end
+    --    end
+    --  end
+    --  unit.__collision_timer = math.random(0, 1)
+    --end
+
   end
 
 end -- update_all

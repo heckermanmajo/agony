@@ -35,6 +35,10 @@ function Projectile.new(start_x, start_y, direction, shooter)
   self.start_x = start_x
   self.start_y = start_y
   self.direction = direction
+  -- change the direction in 80 % of the cases
+  if math.random() < 0.8 then
+    self.direction = self.direction + math.random(-0.2, 0.2)
+  end
   self.x = start_x
   self.y = start_y
   self.shooter = shooter

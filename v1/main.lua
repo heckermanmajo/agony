@@ -9,11 +9,12 @@ Next-tasks:
 - [ ] display dead bodies on the battle field
 - [ ] make the range circle optional
 
-
 ]]
 
 --- @type boolean Allows to enable or disable debug mode; state checks, type checks, etc.
 DEBUG = true
+--- @type boolean Allows to enable or disable profiling; this will generate a report every 100 frames
+PROFILING = false
 
 require "shared/Utils"
 require "shared/Atlas"
@@ -74,25 +75,56 @@ function love.keypressed(key)
   if key == "tab" then TOGGLE_GAME_MODE() end
 end
 
+function love.load()
+
+  --- PROFILING CODE
+  if PROFILING then
+    love.profiler = require('profile')
+    love.profiler.start()
+  end
+  --- END PROFILING CODE
+
+end
+
+--- PROFILING CODE
+love.frame = 0
+--- END PROFILING CODE
+
 function love.update(dt)
+  --- PROFILING CODE
+  --- generates a report every 100 frames
+  if PROFILING then
+    love.frame = love.frame + 1
+    if love.frame%100 == 0 then
+      love.report = love.profiler.report(20)
+      love.profiler.reset()
+    end
+  end
+  --- END PROFILING CODE
+
   if love.keyboard.isDown("escape") then love.event.quit() end
   if MODE == "camp" then Camp.current:update(dt)
   else Battle.current:update(dt) end
 end
 
 local canvas = love.graphics.newCanvas()
+
 function love.draw()
   love.graphics.setCanvas(canvas)
   love.graphics.clear()
 
-  if MODE == "camp" then
-    Camp.current:draw()
-  else
-    Battle.current:draw()
-  end
+  if MODE == "camp" then Camp.current:draw()
+  else Battle.current:draw() end
+
   -- Draw everything here
   love.graphics.setCanvas()
   love.graphics.draw(canvas, 0, 0, 0, zoom, zoom)
+
+  --- PROFILING CODE
+  if PROFILING then
+    love.graphics.print(love.report or "Please wait...")
+  end
+  --- END PROFILING CODE
 end
 
 -- apply zoom in and out

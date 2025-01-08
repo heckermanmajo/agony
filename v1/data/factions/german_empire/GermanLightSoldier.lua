@@ -2,7 +2,7 @@
 --- @type UnitClass
 GermanLightSoldier = {
   speed = 100,
-  hp = 100,
+  hp = 10,
   attack = 10,
   pierce = 1,
   atlas = "mp_soldier",
