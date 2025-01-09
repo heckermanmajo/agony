@@ -39,8 +39,31 @@ function PassiveObject.new(object_type, x, y)
 
   if object_type == "smoke" then
     self.on_ground = false -- smoke should hide stuff beneath
-    self.atlas = "smoke"
-    -- todo: implement the smoke
+    self.atlas = "fire_and_smoke"
+    self.sprite = "smoke_1"
+    self.w = 32
+    self.h = 32
+    local BASE_TIMER = 5
+    self.timer_til_removal = BASE_TIMER + math.random(-BASE_TIMER * 0.2, BASE_TIMER * 0.2)
+    self.rotation = math.random(0, 360)
+    -- only used in update to "blow" the smoke around
+    do
+      self.smoke_x_direction = math.random(-1, 1)
+      self.smoke_y_direction = math.random(-1, 1)
+    end
+  end
+
+  if object_type == "fire_flash" then
+    self.on_ground = false -- fire flash should hide stuff beneath
+    -- todo: implement the fire
+    -- todo: fire needs animations
+    self.atlas = "fire_and_smoke"
+    self.sprite = "fire_1"
+    self.w = 32
+    self.h = 32
+    local BASE_TIMER = 0.2
+    self.timer_til_removal = BASE_TIMER
+    self.rotation = math.random(0, 360)
   end
 
   if object_type == "fire" then
@@ -80,7 +103,14 @@ end
 function PassiveObject.update_all(dt)
   local indexes_to_remove = {}
   for index, passive_object in ipairs(PassiveObject.instances) do
-    -- todo: if smoke-claude move a little bit around
+    --  if smoke-claude move a little bit around
+
+    do
+      if passive_object.object_type == "smoke" then
+        passive_object.x = passive_object.x + passive_object.smoke_x_direction
+        passive_object.y = passive_object.y + passive_object.smoke_y_direction
+      end
+    end
 
     -- progress the timer and maybe remove the passive object
     do

@@ -104,6 +104,23 @@ function Projectile.update_all(dt)
 
           -- todo: maybe create explosion
 
+          -- base on the firing unit create an explosion
+          if projectile.shooter.cls.explosion_radius > 0 then
+
+            -- todo: apply damage to surrounding units
+
+            PassiveObject.new("smoke", projectile.x, projectile.y)
+            PassiveObject.new("smoke", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+            PassiveObject.new("smoke", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+
+            PassiveObject.new("fire_flash", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+            PassiveObject.new("fire_flash", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+            PassiveObject.new("fire_flash", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+            PassiveObject.new("fire_flash", projectile.x + math.random(-10, 10), projectile.y + math.random(-10, 10))
+
+          end
+
+
           unit.hp = unit.hp - projectile.shooter.cls.attack
           if unit.hp <= 0 then
             local reason_of_death = "rifle"

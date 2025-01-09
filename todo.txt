@@ -1,3 +1,4 @@
+ - add bullet-spawn-relative to unit-coordinates (later....)
  - add granates and explosions
     - add a grenade launcher soldier
  - add different looking units for the different factions
