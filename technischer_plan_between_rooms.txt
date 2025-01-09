@@ -1,0 +1,74 @@
+
+
+
+
+
+Monster sind immer nur pro raum.
+- aber durst usw treibt einen weiter, außerdem nimmt die sanity ab nach einer gewissen zeit in
+  einem raum: aber man kann den effekt stoppen durch items.
+Räume brauchen aber ein größeres layout: Prozedural generierte Teile
+ - man kombiniert eine Reihe von unterschiedlichen layouts miteinander.
+ - aber es gibt unterschiedliche Raum-typen
+    - Zwischen-Gänge wie ein labyrinth
+    - kleine Räume
+    - große Räume (weniger labyrinth like)
+ - enemies line of sight
+ - units gehen grade auf den player zu oder zu der last known position
+NPCs: man kann npcs finden, diese sind aber wenige und selten. Manchmal basen, manchmal verzweifelt
+manchmal feindlich, manchmal hilfsbereit.
+
+ein Raum ist ein Graph: und ein stück kann ein ende sein oder eine tür haben
+-> man speichert das ganze als graph.
+-> räume selbst sind groß, aber mann kann die ertmal vor-definieren miteinigen variationen.
+
+-> Räume haben item plätze, npc-plätze, monster-plätze, event-plätze
+
+Events: können schmierereien sein, kot, müll, blut, etc.
+-> sowas steigert das chaos des raumes.
+
+Ist das chaos zu groß werden die türen bei betreten mit einer gewissen wahrscheinlichkeit woanders
+hinführen. Zudem erodiert chaos die sanity und ordnung steigert die sanity.
+
+In räumen in den man schon war können monster spawnen und selten auch neue items.
+
+-> ich brauch ein gutes system für die räume: räume bestehen aus tiles.
+ wenn die tile keinen nachbarn hat wird dort eine wand gerendered - oder eine Tür.
+
+ -> Alle items sind zerstörbar aber produzieren dann unzerstörbaren schrott
+   Schrott kann aufgehoben werden um ihn zu bewegen.
+ -> items können aufgehoben werden oder nicht: diese kann man aber zu schrott zerschlagen.
+
+ Man kann schränke visuell öffnen
+ -> sie enthalten immer nur ein item oder keins.
+ -> jedes item ist auch in der Welt sichtbar; selbes image wie im inventar
+ -> manchmal liegen items einfach so rum
+
+
+
+Performance wird durch ordentlich reinzoomen gewährleistet.
+-> naja und es passiert ja auch nicht viel.
+
+Das primäre game-gefühl ist sehr sparses ressourcen manangement: alles ist wertvoll.
+-> es gibt nur einen schwierigkeits-level: real.
+-> aber wir machen dass tage etwas schneller vergehen.
+-> Es gibt unterschiedliche Regionen: die "Levels der Backrooms", aber ich füge sie erst später hinzu.
+
+
+Das ist ein Game bei dem man eigentlich nach einer initialen entwicklung nur noch content hinzufüpgen muss.
+
+Ausrüstung wird an dem Charakter angezeigt.
+
+- man kann feuer legen
+- waffen zerlegen entitäten richtig mit detailierten Blut resten usw.
+- man muss die leichen loswerden
+- man kann leichen tragen
+- manchmal gibt es eine raum invasion: wenn entitäten in den raum kommen in dem der player grade ist.
+
+
+
+
+
+
+
+
+
